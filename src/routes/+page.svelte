@@ -1,2 +1,2 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<h1>WELCOME</h1>
+<h1>这是一个刚刚形成的网站，关于Nomen的个人网站</h1>
