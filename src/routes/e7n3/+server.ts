@@ -39,13 +39,21 @@ export async function POST({ request }) {
     if (value.password != 'hellonomen2q3a') {
         return new Response(JSON.stringify('密码错误，请不要尝试弱口令爆破，多次输入错误将永久ip封禁! Password wrong, please do not try weak password blasting, multiple input wrong will be permanently ip blocked!'))
     }
-    return new Response(
-        JSON.stringify(await exa(value.url))
+    var result;
+    try {
+        result=await exa(value.url)
+    } catch (error) {
+        result=error;
+    }finally{
+        return new Response(
+            JSON.stringify(result)
+        )
+    }
+    
+}
         // await (new Promise((resolve) => {
             // fetch(value.url)
             //     .then(v => v.text())
             //     .then(v => resolve(v))
             //     .catch(e => resolve(e))
         // }))
-    )
-}
