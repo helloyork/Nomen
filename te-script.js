@@ -24,19 +24,30 @@ driver.executeScript('browserstack_executor: {"action": "setSessionStatus", "arg
 driver.executeScript('browserstack_executor: {"action": "setSessionStatus", "arguments": {"status":"failed","reason": "Oops! my sample test failed"}}');
 */
 
-let driver = new webdriver.Builder().
-  usingServer('http://' + username + ':' + accessKey + '@hub.browserstack.com/wd/hub').
-  withCapabilities(capabilities).build();
+    let driver = new webdriver.Builder()
+        .usingServer(`http://${username}:${accessKey}@hub-cloud.browserstack.com/wd/hub`)
+        .withCapabilities(capabilities).build();
 
-// Creates an instance of Local
-const bs_local = new browserstack.Local();
-const bs_local_args = { key: accessKey };
-bs_local.start(bs_local_args, function () {
+async function main(){
   console.log('Started BrowserStackLocal');
   console.log('BrowserStackLocal running:', bs_local.isRunning());
-  // Your test code goes here, from creating the driver instance till the end, i.e. driver.quit.
-  // Stops the Local instance after your test run is completed, i.e after driver.quit.
+  let result;
+  try{
+    await driver.get("https://www.example.com/");
+    await sleep(30000);
+    result=driver.getPageSource();
+  }catch(err){
+    result={
+      ok:false,
+      error:err,
+    }
+  }
   bs_local.stop(function () {
     console.log('Stopped BrowserStackLocal');
   });
 });
+}
+
+function sleep(ms){
+  return new Promise(resolve=>setTimeout(()=>resolve,ms))
+}
