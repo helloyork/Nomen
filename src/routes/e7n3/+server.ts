@@ -9,7 +9,7 @@ function sleep(ms) {
 export async function GET() {
     return new Response(JSON.stringify(await go('https://nomenawa.netlify.app/proxy')))
 }
-
+//
 async function go(url) {
     let content;
     try {
