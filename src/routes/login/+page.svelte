@@ -1,4 +1,4 @@
-<div class="container" style="margin:10% auto;">
+<div class="container">
   <section id="content">
     <form action="">
       <h1>Welcome to ELC Library</h1>

@@ -1,4 +1,4 @@
-<div style="margin:0 auto;">
+<div>
   <div class="container">
     <section id="content">
       <form action="">

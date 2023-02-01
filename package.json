@@ -41,6 +41,7 @@
 		"chromedriver": "^109.0.0",
 		"chromium": "^3.0.3",
 		"geckodriver": "^3.2.0",
+		"md5": "^2.3.0",
 		"ms-chromium-edge-driver": "^0.5.1",
 		"npm": "^9.4.0",
 		"puppeteer": "^19.6.2",
