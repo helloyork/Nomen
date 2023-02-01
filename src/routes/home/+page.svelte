@@ -1,7 +1,8 @@
 <script>
-	import { onMount } from "svelte/types/runtime/internal/lifecycle";
+	import { onMount } from 'svelte';
 
     onMount(()=>{
-        // if(localStorage.getItem(username))
+        if(localStorage.getItem('username')===null||localStorage.getItem('username')===undefined)location.href='/';
+        else location.href='/book';
     })
 </script>

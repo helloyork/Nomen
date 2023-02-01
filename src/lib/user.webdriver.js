@@ -15,7 +15,7 @@ async function browser(url, username, accessKey) {
     console.log('[Selenium] Selenium is running');
     if (!jugeUrl(url)) {
         console.log(`=== ${new Date().toDateString()} Task Stop in ${start - Date.now()} ms ===`);;
-        return { ok: false, resolve: false, error: 'Invalid resource address', result: null, }
+        return { ok: false, resolve: false, error: '无效资源地址', result: null, }
     }
     try {
         var driver = new webdriver.Builder()
@@ -23,7 +23,7 @@ async function browser(url, username, accessKey) {
             .withCapabilities(capabilities["Windows10-Chrome"]).build();
         console.log('[Selenium] Driver Build');
     } catch (err) {
-        return { ok: false, resolve: true, error: 'Unable to build WebDriver: ' + err, result: null, }
+        return { ok: false, resolve: true, error: '无法构建Webdriver: ' + err, result: null, }
     }
     try {
         console.log('[Selenium] -Start Getting resources: ' + url);
@@ -53,7 +53,7 @@ async function browser(url, username, accessKey) {
         return { ok: true, resolve: true, error: null, result, };
     } catch (err) {
         console.log(`${new Date().toDateString()} Task Stop in ${(Date.now() - start)/1000} s\nError: ${err}`);
-        return { ok: false, resolve: true, error: 'Unable to run WebDriver: ' + err, result: null, }
+        return { ok: false, resolve: true, error: '无法运行Webdriver: ' + err, result: null, }
     }
 }
 

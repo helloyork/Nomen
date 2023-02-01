@@ -9,14 +9,26 @@
 	let state = '端点正在初始化...';
 	let err = '';
 	let message = '';
+	let username='',accessKey='';
 
 	onMount(() => {
 		state = '端点初始化完成';
 		disabled = false;
+		if (
+			localStorage.getItem('username') === null ||
+			localStorage.getItem('username') === undefined ||
+			localStorage.getItem('accessKey') === null ||
+			localStorage.getItem('accessKey') === undefined
+		)
+			location.href = '/';
+		else {
+			username=localStorage.getItem('username')||'';
+			accessKey=localStorage.getItem('accessKey')||'';
+		}
 	});
 	async function fetchHandler() {
 		btcontent = '正在加载';
-		state = '请求发送成功 正在尝试启动...';
+		state = '请求发送成功 正在尝试启动... (启动约需20秒~40秒)';
 		disabled = true;
 		fetch('/selenium', {
 			method: 'POST',
@@ -25,18 +37,19 @@
 			},
 			body: JSON.stringify({
 				url: src,
-				username: 'yorkqu_lHkzw1',
-				accessKey: 'n4j77pzR8Jp9nzg2mCk3'
+				username,
+				accessKey,
 			})
 		})
 			.then((v) => v.json())
 			.then((v) => {
-				state = `启动成功！ 欢迎使用Q代理 该代理由Q创立并维护,不承担任何法律责任,请自行承担使用过程中产生的任何问题      如出现资源丢失或白屏属于正常现象`;
+				state = v.ok?`启动成功！ 欢迎使用Q代理 该代理由Q创立并维护,不承担任何法律责任,请自行承担使用过程中产生的任何问题      如出现资源丢失或白屏属于正常现象`
+				:`出错了，报错信息：${v.error}`;
 				srcdoc = v.result;
-                // console.log(v);
-				err =
-					'当前使用的代理方案：Selenium WebDriver';
-					message='支持我：捐款以抵消服务器维护成本、网站编写的时间成本以及获得一个额外的[网页针对性优化席位]'
+				// console.log(v);
+				err = '当前使用的代理方案：Selenium WebDriver';
+				message =
+					'支持我：捐款以抵消服务器维护成本、网站编写的时间成本以及获得一个额外的[网页针对性优化席位]';
 				btcontent = '加载';
 				setTimeout(() => {
 					disabled = false;
@@ -50,7 +63,6 @@
 				}, 3000);
 			});
 	}
-
 </script>
 
 <div>
