@@ -9,7 +9,9 @@
 	let state = '端点正在初始化...';
 	let err = '';
 	let message = '';
-	let username='',accessKey='';
+	let username = '',
+		accessKey = '';
+	$: loadt = false;
 
 	onMount(() => {
 		state = '端点初始化完成';
@@ -22,8 +24,9 @@
 		)
 			location.href = '/';
 		else {
-			username=localStorage.getItem('username')||'';
-			accessKey=localStorage.getItem('accessKey')||'';
+			username = localStorage.getItem('username') || '';
+			accessKey = localStorage.getItem('accessKey') || '';
+			loadt=true;
 		}
 	});
 	async function fetchHandler() {
@@ -38,13 +41,14 @@
 			body: JSON.stringify({
 				url: src,
 				username,
-				accessKey,
+				accessKey
 			})
 		})
 			.then((v) => v.json())
 			.then((v) => {
-				state = v.ok?`启动成功！ 欢迎使用Q代理 该代理由Q创立并维护,不承担任何法律责任,请自行承担使用过程中产生的任何问题      如出现资源丢失或白屏属于正常现象`
-				:`出错了，报错信息：${v.error}`;
+				state = v.ok
+					? `启动成功！ 欢迎使用Q代理 该代理由Q创立并维护,不承担任何法律责任,请自行承担使用过程中产生的任何问题      如出现资源丢失或白屏属于正常现象`
+					: `出错了，报错信息：${v.error}`;
 				srcdoc = v.result;
 				// console.log(v);
 				err = '当前使用的代理方案：Selenium WebDriver';
@@ -65,26 +69,29 @@
 	}
 </script>
 
-<div>
-	<input bind:value={src} />
-	<button on:click={fetchHandler} {disabled}>
-		{btcontent}
-	</button>
-</div>
-<br />
-<p>{state}</p>
-<p>{err}</p>
-<p>{message}</p>
-<iframe
-	class="ifr"
-	src="about:blank"
-	{srcdoc}
-	border="0"
-	frameborder="no"
-	framespacing="0"
-	title="nomenawa"
-	sandbox
-/>
+{#if loadt}
+	<div>
+		<input bind:value={src} />
+		<button on:click={fetchHandler} {disabled}>
+			{btcontent}
+		</button>
+	</div>
+	<br />
+	<p>{state}</p>
+	<p>{err}</p>
+	<p>{message}</p>
+	<iframe
+		class="ifr"
+		src="about:blank"
+		{srcdoc}
+		border="0"
+		frameborder="no"
+		framespacing="0"
+		title="nomenawa"
+		sandbox
+	/>
+{/if}
+
 <!-- https://www.colamanhua.com -->
 <!-- {@html srcdoc} -->
 <!--  sandbox="allow-top-navigation allow-scripts allow-same-origin allow-popups allow-pointer-lock allow-forms" -->
