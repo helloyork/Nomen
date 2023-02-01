@@ -1,3 +1,5 @@
+
+
 import puppeteer from "puppeteer";
 
 function sleep(ms) {
@@ -7,15 +9,24 @@ function sleep(ms) {
 export async function GET() {
     return new Response(JSON.stringify(await go('https://nomenawa.netlify.app/proxy')))
 }
-
+//
 async function go(url) {
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
-    await page.goto(url);
-    await sleep(5000);
-    const content = await page.content();
-    console.log(content);
-    await browser.close();
+    let content;
+    try {
+        // const browser = await puppeteer.launch();
+        const browser = await puppeteer.launch({
+            ignoreDefaultArgs: ['--disable-extensions'],
+        });
+        const page = await browser.newPage();
+        await page.goto(url);
+        await sleep(5000);
+        content = await page.content();
+        console.log(content);
+        await browser.close();
+    } catch (err) {
+        console.error(err);
+    }
+
     return content;
 }
 

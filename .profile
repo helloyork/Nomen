@@ -1,0 +1,3 @@
+
+export BROWSERSTACK_USERNAME="yorkqu_lHkzw1"
+export BROWSERSTACK_ACCESS_KEY="n4j77pzR8Jp9nzg2mCk3"
