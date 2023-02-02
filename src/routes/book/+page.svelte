@@ -9,7 +9,9 @@
 	let state = '端点正在初始化...';
 	let err = '';
 	let message = '';
-	let username='',accessKey='';
+	let username = '',
+		accessKey = '';
+	$: loadt = false;
 
 	onMount(() => {
 		state = '端点初始化完成';
@@ -22,8 +24,9 @@
 		)
 			location.href = '/';
 		else {
-			username=localStorage.getItem('username')||'';
-			accessKey=localStorage.getItem('accessKey')||'';
+			username = localStorage.getItem('username') || '';
+			accessKey = localStorage.getItem('accessKey') || '';
+			loadt = true;
 		}
 	});
 	async function fetchHandler() {
@@ -65,12 +68,28 @@
 	}
 </script>
 
-<div>
-	<input bind:value={src} />
-	<button on:click={fetchHandler} {disabled}>
-		{btcontent}
-	</button>
-</div>
+{#if loadt}
+	<div>
+		<input bind:value={src} />
+		<button on:click={fetchHandler} {disabled}>
+			{btcontent}
+		</button>
+	</div>
+	<br />
+	<p>{state}</p>
+	<p>{err}</p>
+	<p>{message}</p>
+	<iframe
+		class="ifr"
+		src="about:blank"
+		{srcdoc}
+		border="0"
+		frameborder="no"
+		framespacing="0"
+		title="nomenawa"
+		sandbox
+	/>
+{/if}
 <br />
 <p>{state}</p>
 <p>{err}</p>
@@ -83,7 +102,6 @@
 	frameborder="no"
 	framespacing="0"
 	title="nomenawa"
-	sandbox
 />
 <!-- https://www.colamanhua.com -->
 <!-- {@html srcdoc} -->
