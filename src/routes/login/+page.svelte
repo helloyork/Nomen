@@ -1,4 +1,7 @@
 <script>
+	import { onMount } from "svelte";
+
+
     let username='',password='';
     async function login(){
         if(username!=''&&password!=''){
@@ -11,6 +14,9 @@
         })
         }
     }
+	onMount(()=>{
+		if(localStorage.getItem('username')!==null && localStorage.getItem('username')!==undefined)location.href='home';
+	})
 </script>
 
 <div class="container">

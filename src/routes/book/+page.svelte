@@ -10,6 +10,7 @@
 	let err = '';
 	let message = '';
 	let username='',accessKey='';
+	let loadt=false;
 
 	onMount(() => {
 		state = '端点初始化完成';
@@ -24,6 +25,7 @@
 		else {
 			username=localStorage.getItem('username')||'';
 			accessKey=localStorage.getItem('accessKey')||'';
+			loadt=true;
 		}
 	});
 	async function fetchHandler() {
@@ -47,9 +49,9 @@
 				:`出错了，报错信息：${v.error}`;
 				srcdoc = v.result;
 				// console.log(v);
-				err = '当前使用的代理方案：Selenium WebDriver';
+				err = '当前使用的代理方案：Selenium WebDriver | 脚本：拦截';
 				message =
-					'支持我：捐款以抵消服务器维护成本、网站编写的时间成本以及获得一个额外的[网页针对性优化席位]';
+					'支持我：资助我以抵消服务器维护成本、网站编写的时间成本以及获得一个额外的[网页针对性优化席位]';
 				btcontent = '加载';
 				setTimeout(() => {
 					disabled = false;
@@ -65,6 +67,7 @@
 	}
 </script>
 
+{#if loadt}
 <div>
 	<input bind:value={src} />
 	<button on:click={fetchHandler} {disabled}>
@@ -75,6 +78,8 @@
 <p>{state}</p>
 <p>{err}</p>
 <p>{message}</p>
+{/if}
+
 <iframe
 	class="ifr"
 	src="about:blank"

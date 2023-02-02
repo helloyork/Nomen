@@ -1,6 +1,8 @@
 import webdriver from "selenium-webdriver";
+import fast_selenium from '$lib/fast-selenium.js'
 import capabilities from '$lib/capabilities.json';
 import cheerio from "cheerio";
+import { sql } from "./user.log";
 import { check } from '$lib/user.identify';
 
 //@ts-ignore
@@ -26,6 +28,9 @@ async function browser(url, username, accessKey) {
         return { ok: false, resolve: true, error: '无法构建Webdriver: ' + err, result: null, }
     }
     try {
+        sql(({ insert }) => {
+            insert(username, `Try Get ${url}`)
+        })
         console.log('[Selenium] -Start Getting resources: ' + url);
         await driver.get(url);
         console.log('[Selenium] +Done Getting resources: ' + url);
@@ -41,18 +46,16 @@ async function browser(url, username, accessKey) {
             }
         })
 
-        // await sleep(3000);
-
         console.log('[Selenium] -Start Getting PageResources');
         let result = await driver.getPageSource();
         console.log('[Selenium] +Done Getting PageResources');
 
         await driver.quit();
         console.log('[Selenium] +Done');
-        console.log(`--- ${new Date().toDateString()} Task Stop in ${(Date.now() - start)/1000} s ---`);
+        console.log(`--- ${new Date().toDateString()} Task Stop in ${(Date.now() - start) / 1000} s ---`);
         return { ok: true, resolve: true, error: null, result, };
     } catch (err) {
-        console.log(`${new Date().toDateString()} Task Stop in ${(Date.now() - start)/1000} s\nError: ${err}`);
+        console.log(`${new Date().toDateString()} Task Stop in ${(Date.now() - start) / 1000} s\nError: ${err}`);
         return { ok: false, resolve: true, error: '无法运行Webdriver: ' + err, result: null, }
     }
 }
