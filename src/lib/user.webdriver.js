@@ -56,7 +56,7 @@ async function browser(url, username, accessKey) {
         return { ok: true, resolve: true, error: null, result, };
     } catch (err) {
         console.log(`${new Date().toDateString()} Task Stop in ${(Date.now() - start) / 1000} s\nError: ${err}`);
-        return { ok: false, resolve: true, error: '无法运行Webdriver: ' + err, result: null, }
+        return { ok: false, resolve: true, error: '无法运行Webdriver: ' + (err.toString().includes('ERR_NAME_NOT_RESOLVED')?'网址不存在':err), result: null, }
     }
 }
 
