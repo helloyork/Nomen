@@ -91,18 +91,7 @@
 	/>
 {/if}
 <br />
-<p>{state}</p>
-<p>{err}</p>
-<p>{message}</p>
-<iframe
-	class="ifr"
-	src="about:blank"
-	{srcdoc}
-	border="0"
-	frameborder="no"
-	framespacing="0"
-	title="nomenawa"
-/>
+
 <!-- https://www.colamanhua.com -->
 <!-- {@html srcdoc} -->
 <!--  sandbox="allow-top-navigation allow-scripts allow-same-origin allow-popups allow-pointer-lock allow-forms" -->
