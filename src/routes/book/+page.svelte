@@ -33,6 +33,7 @@
 		btcontent = '正在加载';
 		state = '请求发送成功 正在尝试启动... (启动约需20秒~40秒)';
 		disabled = true;
+		let tgUrl = src;
 		fetch('/selenium', {
 			method: 'POST',
 			headers: {
@@ -54,6 +55,19 @@
 				message =
 					'支持我：资助我以抵消服务器维护成本、网站编写的时间成本以及获得一个额外的[网页针对性优化席位]';
 				btcontent = '加载';
+				// @ts-ignore
+				// const links = document.querySelector("iframe").contentWindow.document.querySelectorAll("a");
+				// links.forEach(e=>{
+				// 	if(e.href.startsWith('/'))e.href = (new URL(tgUrl)).origin+e.href;
+				// 	e.addEventListener("click",()=>{
+				// 		if(!disabled && e.href) {
+				// 			src = e.href;
+				// 			fetchHandler();
+				// 		}
+				// 		console.log('click!')
+				// 	})
+				// })
+
 				setTimeout(() => {
 					disabled = false;
 				}, 3000);
@@ -67,7 +81,10 @@
 			});
 	}
 </script>
-
+<svelte:window on:keypress={(e)=>{
+	if(!disabled && e.keyCode==13)fetchHandler();
+	else return true;
+}} />
 {#if loadt}
 	<div>
 		<input bind:value={src} />
@@ -87,7 +104,6 @@
 		frameborder="no"
 		framespacing="0"
 		title="nomenawa"
-		sandbox
 	/>
 {/if}
 <br />
