@@ -6,7 +6,7 @@
     async function login(){
         if(username!=''&&password!=''){
             fetch('/check',{method:'POST',body:JSON.stringify({username,accessKey:password})}).then(v=>v.json())
-            .then(v=>{if(v.result===true){
+            .then(v=>{if(v.result){
                 localStorage.setItem('username',username);
                 localStorage.setItem('accessKey',password);
                 location.href='home';

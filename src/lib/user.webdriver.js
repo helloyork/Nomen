@@ -7,9 +7,10 @@ import { sql } from "./user.log";
 import { check } from '$lib/user.identify';
 
 //@ts-ignore
-export async function run(username, accessKey, url) {
-    if (!check(username, accessKey)) return { ok: false, resolve: false, error: 'Wrong username or accessKey', result: null, }
-    return await browser(url, username, accessKey);
+export async function run(nickname, password, url) {
+    let res = check(nickname, password)
+    if (!res) return { ok: false, resolve: false, error: 'Wrong username or accessKey', result: null, }
+    return await browser(url, res.username, res.accessKey);
 }
 
 const optimisation = {
@@ -42,7 +43,7 @@ async function browser(url, username, accessKey) {
 
     try {
         var driver = new webdriver.Builder()
-            .usingServer(`http://${username}:${accessKey}@hub-cloud.browserstack.com/wd/hub`)
+            .usingServer(`http://${username}:${accessKey}@hub.lambdatest.com/wd/hub`)
             .withCapabilities(capabilities["Windows10-Chrome"]).build();
         console.log('[Selenium] Driver Build');
     } catch (err) {
