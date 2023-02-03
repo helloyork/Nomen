@@ -5,8 +5,8 @@ import puppeteer from "puppeteer";
 From YorkQu
 
 Thank you for your time!
-But actually the main program of my project is not index.js
-I just follow the direction and create a index.js
+But actually, the main program of my project is not index.js.
+I just follow the direction and create an index.js
 
 I have tried many similar programs in the past, like BrowserStack, Lambda Test
 But there are some efficiency issues, sometimes the network transfer is very slow
