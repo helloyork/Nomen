@@ -8,7 +8,7 @@
             fetch('/check',{method:'POST',body:JSON.stringify({username,accessKey:password})}).then(v=>v.json())
             .then(v=>{if(v.result){
                 localStorage.setItem('username',username);
-                localStorage.setItem('accessKey',password);
+                localStorage.setItem('password',password);
                 location.href='home';
             }else alert('Username or password is wrong')
         })

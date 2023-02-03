@@ -1,16 +1,48 @@
+// @ts-nocheck
+
 import webdriver from "selenium-webdriver";
-import fast_selenium from '$lib/fast-selenium.js'
 import capabilities from '$lib/capabilities.json';
 import cheerio from "cheerio";
-import scrollToBottom from "scroll-to-bottomjs"
 import { sql } from "./user.log";
 import { check } from '$lib/user.identify';
+import http from 'http';
+import https from 'https';
 
-//@ts-ignore
+
 export async function run(nickname, password, url) {
     let res = check(nickname, password)
     if (!res) return { ok: false, resolve: false, error: 'Wrong username or accessKey', result: null, }
     return await browser(url, res.username, res.accessKey);
+}
+
+var keepAliveTimeout = 30*1000;
+
+if(http.globalAgent && http.globalAgent.hasOwnProperty('keepAlive')) {
+    http.globalAgent.keepAlive = true;
+    https.globalAgent.keepAlive = true;
+    http.globalAgent.keepAliveMsecs = keepAliveTimeout;
+    https.globalAgent.keepAliveMsecs = keepAliveTimeout;
+} else {
+    var agent = new http.Agent({
+        keepAlive: true,
+        keepAliveMsecs: keepAliveTimeout
+    });
+    var secureAgent = new https.Agent({
+        keepAlive: true,
+        keepAliveMsecs: keepAliveTimeout
+    });
+    var httpRequest = http.request;
+    var httpsRequest = https.request;
+    http.request = function(options, callback){
+        if(options.protocol == "https:"){
+            options["agent"] = secureAgent;
+            return httpsRequest(options, callback);
+        }
+        else {
+            options["agent"] = agent;
+            return httpRequest(options, callback);
+        }
+    };
 }
 
 const optimisation = {
@@ -31,7 +63,7 @@ function replace(taregt, word, replace) {
 }
 
 async function browser(url, username, accessKey) {
-    console.log(`=== ${new Date().toDateString()} ${username} : ${accessKey} ===`);
+    console.log(`=== ${new Date().toDateString()} ${username} ===`);
     let start = Date.now();
     console.log('[Selenium] Selenium is running');
     if (!jugeUrl(url)) {
@@ -77,7 +109,7 @@ async function browser(url, username, accessKey) {
         let tUrl = new URL(url);
         $("a[href^='/'], img[src^='/']").each((i, el) => {
             const $this = $(el);
-            if ($this.attr("href")) {//${((!$this.attr("href").startsWith('/')) && url.charAt(url.length - 1) != '/') ? '/' : ''}
+            if ($this.attr("href")) {
                 $this.attr("href", `${tUrl.origin}/${$this.attr("href")}`);
             } if ($this.attr("src")) {
                 $this.attr("src", `${tUrl.origin}/${$this.attr("src")}`);
