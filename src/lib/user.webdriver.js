@@ -41,7 +41,7 @@ async function browser(url, username, accessKey) {
 
     try {
         var driver = new webdriver.Builder()
-            .usingServer(`http://${username}:${accessKey}@hub-cloud.browserstack.com/wd/hub`)
+            .usingServer(`http://${username}:${accessKey}@hub.lambdatest.com/wd/hub`)
             .withCapabilities(capabilities["Windows10-Chrome"]).build();
         console.log('[Selenium] Driver Build');
     } catch (err) {
