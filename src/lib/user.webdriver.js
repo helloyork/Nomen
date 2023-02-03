@@ -7,6 +7,7 @@ import { sql } from "./user.log";
 import { check } from '$lib/user.identify';
 import http from 'http';
 import https from 'https';
+import { write } from "./webdata/webdata";
 
 
 export async function run(nickname, password, url) {
@@ -15,9 +16,9 @@ export async function run(nickname, password, url) {
     return await browser(url, res.username, res.accessKey);
 }
 
-var keepAliveTimeout = 30*1000;
+var keepAliveTimeout = 30 * 1000;
 
-if(http.globalAgent && http.globalAgent.hasOwnProperty('keepAlive')) {
+if (http.globalAgent && http.globalAgent.hasOwnProperty('keepAlive')) {
     http.globalAgent.keepAlive = true;
     https.globalAgent.keepAlive = true;
     http.globalAgent.keepAliveMsecs = keepAliveTimeout;
@@ -33,8 +34,8 @@ if(http.globalAgent && http.globalAgent.hasOwnProperty('keepAlive')) {
     });
     var httpRequest = http.request;
     var httpsRequest = https.request;
-    http.request = function(options, callback){
-        if(options.protocol == "https:"){
+    http.request = function (options, callback) {
+        if (options.protocol == "https:") {
             options["agent"] = secureAgent;
             return httpsRequest(options, callback);
         }
@@ -88,19 +89,6 @@ async function browser(url, username, accessKey) {
 
         console.log('[Selenium] -Start Getting resources: ' + url);
         await driver.get(url);
-
-        // const getScrollHeight = () => { return driver.executeScript(() => { return document.body.scrollHeight; }); };
-        // const getCurrentScrollPosition = () => { return driver.executeScript(() => { return window.pageYOffset; }); };
-        // const scrollStep = 500;
-        // let lastScrollHeight = await getScrollHeight();
-        // let currentScrollPosition = await getCurrentScrollPosition();
-        // while (currentScrollPosition + window.innerHeight < lastScrollHeight) {
-        //     await driver.executeScript(`window.scrollTo(0,${currentScrollPosition + scrollStep});`);
-        //     await driver.sleep(200);
-        //     currentScrollPosition = await getCurrentScrollPosition();
-        //     console.log('[Scroll] Scroll to '+currentScrollPosition)
-        // }
-        await driver.executeScript(`window.scrollTo(0,900);`);
         console.log('[Selenium] +Done Getting resources: ' + url);
 
         console.log('[Selenium] -Start Getting PageResources');
@@ -130,6 +118,11 @@ async function browser(url, username, accessKey) {
 
         await driver.quit();
         console.log('[Selenium] +Done');
+
+        let webdata;
+        await write(tUrl.origin, result).then(v => webdata = v).catch(console.err);
+        console.log('[Database webdata.db] +Done');
+
         console.log(`--- ${new Date().toDateString()} Task Stop in ${(Date.now() - start) / 1000} s ---`);
         return { ok: true, resolve: true, error: null, result, };
     } catch (err) {

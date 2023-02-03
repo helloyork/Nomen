@@ -7,14 +7,18 @@ const database = new (sqlite3.verbose()).Database('/project/home/helloyork/works
 _sql`
     CREATE TABLE IF NOT EXISTS webdata (
         identifier TEXT NOT NULL,
-        orgin TEXT NOT NULL,
+        origin TEXT NOT NULL,
         content TEXT NOT NULL
     )
 `;
 
-export async function write(orgin, content) {
+export async function write(origin, content) {
     console.log(`[Database: webdata.db] Write`)
-    return _sql`INSERT INTO webdata VALUES(${md5(content)},${orgin},${content})`;
+    return new Promise((resolve,reject)=>{
+        _sql`INSERT INTO webdata VALUES(${md5(content)},${origin},${content})`
+        .then(()=>resolve(md5(content)))
+        .catch(err=>reject(err));
+    })
 }
 
 export async function read(identifier) {
