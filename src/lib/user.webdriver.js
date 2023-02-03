@@ -2,7 +2,6 @@ import webdriver from "selenium-webdriver";
 import fast_selenium from '$lib/fast-selenium.js'
 import capabilities from '$lib/capabilities.json';
 import cheerio from "cheerio";
-import scrollToBottom from "scroll-to-bottomjs"
 import { sql } from "./user.log";
 import { check } from '$lib/user.identify';
 

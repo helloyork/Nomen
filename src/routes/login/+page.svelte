@@ -8,14 +8,14 @@
             fetch('/check',{method:'POST',body:JSON.stringify({username,accessKey:password})}).then(v=>v.json())
             .then(v=>{if(v.result===true){
                 localStorage.setItem('username',username);
-                localStorage.setItem('accessKey',password);
+                localStorage.setItem('password',password);
                 location.href='home';
             }else alert('Username or password is wrong')
         })
         }
     }
 	onMount(()=>{
-		if(localStorage.getItem('username')!==null && localStorage.getItem('username')!==undefined)location.href='home';
+		if(localStorage.getItem('username')!==null && localStorage.getItem('password')!==null)location.href='home';
 	})
 </script>
 

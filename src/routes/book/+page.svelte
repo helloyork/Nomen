@@ -19,13 +19,13 @@
 		if (
 			localStorage.getItem('username') === null ||
 			localStorage.getItem('username') === undefined ||
-			localStorage.getItem('accessKey') === null ||
-			localStorage.getItem('accessKey') === undefined
+			localStorage.getItem('password') === null ||
+			localStorage.getItem('password') === undefined
 		)
 			location.href = '/';
 		else {
 			username = localStorage.getItem('username') || '';
-			accessKey = localStorage.getItem('accessKey') || '';
+			accessKey = localStorage.getItem('password') || '';
 			loadt = true;
 		}
 	});

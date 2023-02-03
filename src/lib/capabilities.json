@@ -1,32 +1,16 @@
 {
-    "Windows7-Chrome": {
-        "bstack:options": {
-            "os": "Windows",
-            "osVersion": "7",
-            "browserVersion": "109.0",
-            "buildName": "browserstack-build-1",
-            "sessionName": "Windows7-Chrome test"
-        },
-        "browserName": "Chrome"
-    },
     "Windows10-Chrome": {
-        "bstack:options": {
-            "os": "Windows",
-            "osVersion": "10",
-            "browserVersion": "103.0",
-            "buildName": "browserstack-build-1",
-            "sessionName": "Windows10-Chrome test"
-        },
-        "browserName": "Chrome"
-    },
-    "Windows11-Chrome": {
-        "bstack:options": {
-            "os": "Windows",
-            "osVersion": "11",
-            "browserVersion": "103.0",
-            "buildName": "browserstack-build-1",
-            "sessionName": "Windows11-Chrome test"
-        },
-        "browserName": "Chrome"
+        "browserName": "Chrome",
+        "browserVersion": "110.0",
+        "LT:Options": {
+            "username": "helloquyork",
+            "accessKey": "jpkNsyiJfccTZWymi8MwbAokdvNeHJ3YPzkc9FiLgvNUI3sI7e",
+            "platformName": "Windows 10",
+            "network": true,
+            "project": "Untitled",
+            "networkThrottling": "Regular 4G",
+            "w3c": true,
+            "plugin": "node_js-node_js"
+        }
     }
 }
