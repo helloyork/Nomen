@@ -6,6 +6,7 @@ export async function load({ params }) {
     if (result && result.length) return {
         resolve:true,
         content: result[0].content,
+        org:result[0].origin,
         slug:params.slug
     };
 }

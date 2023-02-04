@@ -53,7 +53,7 @@ async function browser(url, username, accessKey) {
         var page = await browser.newPage();
         await page.setViewport({
             width: 1024,
-            height: 6900,
+            height: 14000,
             deviceScaleFactor: 1,
         });
         await page.setExtraHTTPHeaders({
@@ -76,20 +76,26 @@ async function browser(url, username, accessKey) {
         let PageResources = await page.content();
         const $ = cheerio.load(PageResources);
         let tUrl = new URL(url);
-        $("a[href^='/'], img[src^='/']").each((i, el) => {
+        $("img[src^='/']").each((i, el) => {
             const $this = $(el);
-            if ($this.attr("href")) {
-                $this.attr("href", `${tUrl.origin}/${$this.attr("href")}`);
-            } if ($this.attr("src")) {
-                $this.attr("src", `${tUrl.origin}/${$this.attr("src")}`);
-            }
-        })
+            if($this.attr("src").startsWith('//'))$this.attr("src", `https:${$this.attr("src")}`);
+            else $this.attr("src", `${tUrl.origin}${$this.attr("src")}`);
+            
+        }) 
         $("link[href^='/'], script[src^='/']").each((i, el) => {
             const $this = $(el);
             if ($this.attr("href") && $this.attr("href")?.startsWith('//')) {
                 $this.attr("href", `https:${$this.attr("href")}`);
             } if ($this.attr("src") && $this.attr("src")?.startsWith('//')) {
                 $this.attr("src", `https:${$this.attr("src")}`);
+            }
+        })
+        $("a[href^='/']").each((i, el) => {
+            const $this = $(el);
+            if ($this.attr("href")) {
+                if($this.attr("href").startsWith('/')){
+                    $this.attr("href", `/book?note=${btoa(tUrl.origin+$this.attr("href"))}`);
+                }else $this.attr("href", `/book?note=${btoa($this.attr("href"))}`);
             }
         })
 
