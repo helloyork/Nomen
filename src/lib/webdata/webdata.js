@@ -1,6 +1,6 @@
 import sqlite3 from "sqlite3";
 import md5 from "md5";
-const database = new (sqlite3.verbose()).Database('/project/home/helloyork/workspace/src/lib/webdata/webdata.db',sqlite3.OPEN_READWRITE, (err) => {
+const database = new (sqlite3.verbose()).Database('webdata.db', (err) => {
     console.log(`[Database: webdata.db] Connect`)
     if (err) console.error(err);
 })
@@ -14,10 +14,17 @@ _sql`
 
 export async function write(origin, content) {
     console.log(`[Database: webdata.db] Write`)
-    return new Promise((resolve,reject)=>{
-        _sql`INSERT INTO webdata VALUES(${md5(content)},${origin},${content})`
-        .then(()=>resolve(md5(content)))
-        .catch(err=>reject(err));
+    return new Promise((resolve, reject) => {
+        read(md5(content)).then(rows => {
+            if (rows.length <= 0) {
+                _sql`INSERT INTO webdata VALUES(${md5(content)},${origin},${content})`
+                    .then(() => { console.log(`[Database: webdata.db] Write Done`); resolve(md5(content)) })
+                    .catch(err => reject(err));
+            } else {
+                console.log(`[Database: webdata.db] Has Same`)
+                return md5(content);
+            }
+        })
     })
 }
 

@@ -3,7 +3,7 @@
 import webdriver from "selenium-webdriver";
 import capabilities from '$lib/capabilities.json';
 import cheerio from "cheerio";
-import { sql } from "./user.log";
+import { sql } from "./log/user.log";
 import { check } from '$lib/user.identify';
 import http from 'http';
 import https from 'https';
@@ -75,14 +75,16 @@ async function browser(url, username, accessKey) {
     if (target.startsWith('www.')) target = target.split('www.').join('');
 
     try {
+        
         var driver = new webdriver.Builder()
             .usingServer(`http://${username}:${accessKey}@hub.lambdatest.com/wd/hub`)
             .withCapabilities(capabilities["Windows10-Chrome"]).build();
         console.log('[Selenium] Driver Build');
     } catch (err) {
         return { ok: false, resolve: true, error: '无法构建Webdriver: ' + err, result: null, }
-    }
-    try {
+    } try {
+        
+        
         sql(({ insert }) => {
             insert(username, `Try Get ${url}`)
         })
@@ -119,12 +121,12 @@ async function browser(url, username, accessKey) {
         await driver.quit();
         console.log('[Selenium] +Done');
 
-        let webdata;
-        await write(tUrl.origin, result).then(v => webdata = v).catch(console.err);
+        let webdata = await write(tUrl.origin, result);
+        console.log(`[WebData] ${webdata}`);
         console.log('[Database webdata.db] +Done');
-
+        
         console.log(`--- ${new Date().toDateString()} Task Stop in ${(Date.now() - start) / 1000} s ---`);
-        return { ok: true, resolve: true, error: null, result, };
+        return { ok: true, resolve: true, error: null, result,webdata };
     } catch (err) {
         console.log(`${new Date().toDateString()} Task Stop in ${(Date.now() - start) / 1000} s\nError: ${err}`);
         return { ok: false, resolve: true, error: '无法运行Webdriver: ' + (err.toString().includes('ERR_NAME_NOT_RESOLVED') ? '网址不存在' : err), result: null, }

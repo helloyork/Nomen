@@ -1,16 +1,13 @@
 {
-    "Windows10-Chrome": {
-        "browserName": "Chrome",
-        "browserVersion": "110.0",
-        "LT:Options": {
-            "username": "helloquyork",
-            "accessKey": "jpkNsyiJfccTZWymi8MwbAokdvNeHJ3YPzkc9FiLgvNUI3sI7e",
-            "platformName": "Windows 10",
-            "network": true,
-            "project": "Untitled",
-            "networkThrottling": "Regular 4G",
-            "w3c": true,
-            "plugin": "node_js-node_js"
-        }
+    "browserName": "Chrome",
+    "browserVersion": "latest",
+    "LT:Options": {
+        "platform": "Windows 10",
+        "build": "puppeteer-build-1",
+        "name": "My first Puppeteer test",
+        "resolution": "1366x768",
+        "user": "helloquyork",
+        "accessKey": "jpkNsyiJfccTZWymi8MwbAokdvNeHJ3YPzkc9FiLgvNUI3sI7e",
+        "network": true
     }
 }

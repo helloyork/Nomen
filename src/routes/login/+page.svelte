@@ -15,7 +15,7 @@
         }
     }
 	onMount(()=>{
-		if(localStorage.getItem('username')!==null && localStorage.getItem('username')!==undefined)location.href='home';
+		if(localStorage.getItem('username')!==null && localStorage.getItem('password')!==null)location.href='home';
 	})
 </script>
 
