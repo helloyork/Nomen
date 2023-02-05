@@ -1,13 +1,16 @@
 // @ts-nocheck
 
 import puppeteer from "puppeteer";
-import capabilities from './capabilities.json' assert { type: "json" };
 import cheerio from "cheerio";
-import { sql } from "./log/user.log.js";
-import { check } from './user.identify.js';
+import axios from "axios";
+import capabilities from './capabilities.json' assert { type: "json" };
 import http from 'http';
 import https from 'https';
+import { sql } from "./log/user.log.js";
+import { check } from './user.identify.js';
 import { write } from "./webdata/webdata.js";
+import { userread, userwrite } from "./user/user.manage.js";
+import { rejects } from "assert";
 
 
 export async function run(nickname, password, url) {
@@ -27,6 +30,10 @@ const optimisation = {
     }
 }
 
+const init = {
+    point: 1000
+}
+
 function cut(taregt, word) {
     return taregt.split(word).join('');
 }
@@ -34,10 +41,9 @@ function replace(taregt, word, replace) {
     return taregt.split(word).join(replace);
 }
 
-async function browser(url, username, accessKey) {
+async function browser(url, username, password) {
     console.log(`=== ${new Date().toDateString()} ${username} ===`);
     let start = Date.now();
-    console.log('[Selenium] Selenium is running');
     if (!jugeUrl(url)) {
         console.log(`=== ${new Date().toDateString()} Task Stop in ${start - Date.now()} ms ===`);;
         return { ok: false, resolve: false, error: '无效资源地址', result: null, }
@@ -46,42 +52,129 @@ async function browser(url, username, accessKey) {
     if (target.startsWith('www.')) target = target.split('www.').join('');
 
     try {
+        var header = [
+            {
+                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+                "Accept-Encoding": "gzip, deflate, br",
+                "Accept-Language": "en-US,en;q=0.5",
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36 Edg/109.0.1518.70",
+                "Cookie": "",
+                "Referer": url,
+                "Referrer": url,
+                "Content-Type": "text/html"
+            }, {
+                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+                "Accept-Encoding": "gzip, deflate, br",
+                "Accept-Language": "en-US,en;q=0.5",
+                "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 14_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1",
+                "Cookie": "",
+                "Referer": url,
+                "Referrer": url,
+                "Content-Type": "text/html"
+            }, {
+                "Accept": "text/html, application/xhtml+xml, image/jxr, */*",
+                "Accept-Encoding": "gzip, deflate",
+                "Accept-Language": "en-US,en;q=0.5",
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36 Edg/109.0.1518.70",
+                "Cookie": "",
+                "Referer": url,
+                "Referrer": url,
+                "Content-Type": "text/html"
+            }
+        ];
+        var imageNormal = ['https://s1.baozimh.com'];
+        console.log('[Puppeteer] Try Connecting');
         var browser = await puppeteer.connect({
             browserWSEndpoint:
                 `wss://cdp.lambdatest.com/puppeteer?capabilities=${encodeURIComponent(JSON.stringify(capabilities))}`,
         })
         var page = await browser.newPage();
+        var user = await userread(username);
+        if (user.length <= 0) {
+            await userwrite(username, password, JSON.stringify(init));
+            user = await userread(username);
+        }
+        var uservalue = JSON.parse(user[0].value);
+        if (uservalue.point <= 20) return { ok: false, resolve: true, error: '可用积分不足', result: null, }
         await page.setViewport({
             width: 1024,
             height: 14000,
             deviceScaleFactor: 1,
         });
-        await page.setExtraHTTPHeaders({
-            referrer: url,
-            "User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.82 Safari/537.36"
-        })
+        await page.setExtraHTTPHeaders(header[Math.floor(Math.random() * header.length)]);
         console.log('[Puppeteer] Browser Ready');
     } catch (err) {
         return { ok: false, resolve: true, error: '无法启动Puppeteer Browser: ' + err, result: null, }
     } try {
+        async function normalGetData(urle) {
+            return new Promise((resolve) => {
+                axios.head(urle)
+                    .then(response => {
+                        console.log(`+[Axios Normal] ${urle} : ${response.status}`);
+                        resolve(response.status === 200);
+                    })
+                    .catch(() => {
+                        console.log(`+[Axios Normal] ${urle} : Error`);
+                        resolve(false)
+                    })
+            })
+        }
+        async function getImageNormal(url) {
+            return new Promise((resolve, rejects) => {
+                axios.get(url, {
+                    responseType: 'arraybuffer',
+                    headers: header[Math.floor(Math.random() * header.length)]
+                }).then(response => {
+                    console.log(`+[Axios ImageNormal] Done get ${url}`);
+                    const buffer = new Buffer.from(response.data, 'binary').toString('base64');
+                    resolve(`data:${response.headers['content-type']};base64,${buffer}`);
+                }).catch(err => rejects(err))
+            })
+        }
+        async function getImageData(urle) {
+            try {
+                url = `https://api.scrapingant.com/v2/general?url=${encodeURIComponent(urle)}&x-api-key=0d18b1f1f1fa4035a7ab0d7f2b6dff4f`
+                const response = await axios.get(url, {
+                    responseType: 'arraybuffer',
+                    headers: header[Math.floor(Math.random() * header.length)]
+                });
+                console.log(`+[Axios ScrapingAnt] Done get ${urle}`)
+                const buffer = new Buffer.from(response.data, 'binary').toString('base64');
+                return `data:${response.headers['content-type']};base64,${buffer}`;
+            } catch (err) {
+                console.log('[Axios ScrapingAnt] Error');
+            }
+        }
         sql(({ insert }) => {
             insert(username, `Try Get ${url}`)
         })
 
         console.log('[Puppeteer] -Start Getting resources: ' + url);
-        await page.goto(url);
+        await page.goto(url, { waitUntil: 'networkidle0' });
+        await page.waitForTimeout(3000);
         console.log('[Puppeteer] +Done Getting resources: ' + url);
 
         console.log('[Puppeteer] -Start Getting PageResources');
         let PageResources = await page.content();
+
+        await browser.close();
+        console.log('[Puppeteer] +Close');
+
         const $ = cheerio.load(PageResources);
         let tUrl = new URL(url);
-        $("img[src^='/']").each((i, el) => {
-            const $this = $(el);
-            if($this.attr("src").startsWith('//'))$this.attr("src", `https:${$this.attr("src")}`);
-            else $this.attr("src", `${tUrl.origin}${$this.attr("src")}`);
-            
-        }) 
+        let images = $("img");
+        for (let i = 0; i < images.length; i++) {
+            let src = images[i].attribs.src;
+            if (src.startsWith("//")) src = `https:${src}`;
+            else if (src.startsWith("/")) src = `${tUrl.origin}${src}`;
+            if (await normalGetData(src)) {
+                if (imageNormal.includes((new URL(src)).origin)) {
+                    $(images[i]).attr('src', await getImageNormal(src));
+                } else $(images[i]).attr('src', src);
+            } else {
+                $(images[i]).attr('src', await getImageData(src));
+            }
+        }
         $("link[href^='/'], script[src^='/']").each((i, el) => {
             const $this = $(el);
             if ($this.attr("href") && $this.attr("href")?.startsWith('//')) {
@@ -90,12 +183,12 @@ async function browser(url, username, accessKey) {
                 $this.attr("src", `https:${$this.attr("src")}`);
             }
         })
-        $("a[href^='/']").each((i, el) => {
+        $("a").each((i, el) => {
             const $this = $(el);
             if ($this.attr("href")) {
-                if($this.attr("href").startsWith('/')){
-                    $this.attr("href", `/book?note=${btoa(tUrl.origin+$this.attr("href"))}`);
-                }else $this.attr("href", `/book?note=${btoa($this.attr("href"))}`);
+                if ($this.attr("href").startsWith('/')) {
+                    $this.attr("href", `/book?note=${btoa(tUrl.origin + $this.attr("href"))}`);
+                } else $this.attr("href", `/book?note=${btoa($this.attr("href"))}`);
             }
         })
 
@@ -103,15 +196,14 @@ async function browser(url, username, accessKey) {
         if (optimisation[target] !== undefined) result = optimisation[target]($, result);
         console.log('[Puppeteer] +Done Getting PageResources');
 
-        await browser.close();
-        console.log('[Puppeteer] +Close');
-
         let webdata = await write(tUrl.origin, result);
         console.log(`[WebData] ${webdata}`);
         console.log('[Database webdata.db] +Done');
 
-        console.log(`--- ${new Date().toDateString()} Task Stop in ${(Date.now() - start) / 1000} s ---`);
-        return { ok: true, resolve: true, error: null, result, webdata };
+        uservalue.point -= (Date.now() - start) / 1000 + 10;
+        await userwrite(username, password, JSON.stringify(uservalue))
+        console.log(`=== ${new Date().toDateString()} Task Stop in ${(Date.now() - start) / 1000} s ===`);;
+        return { ok: true, resolve: true, error: null, webdata, point: uservalue.point };
     } catch (err) {
         console.log(`${new Date().toDateString()} Task Stop in ${(Date.now() - start) / 1000} s\nError: ${err}`);
         return { ok: false, resolve: true, error: '无法运行Puppeteer Browser: ' + (err.toString().includes('ERR_NAME_NOT_RESOLVED') ? '网址不存在' : err), result: null, }
@@ -125,7 +217,6 @@ function sleep(ms) {
 function jugeUrl(t) {
     return /http(s)?:\/\/([\w-]+\.)+[\w-]+(\/[\w- .\/?%&=]*)?/.test(t)
 }
-
 
 var keepAliveTimeout = 30 * 1000;
 

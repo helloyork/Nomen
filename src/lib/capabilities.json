@@ -6,8 +6,10 @@
         "build": "puppeteer-build-1",
         "name": "My first Puppeteer test",
         "resolution": "1366x768",
-        "user": "helloquyork",
-        "accessKey": "jpkNsyiJfccTZWymi8MwbAokdvNeHJ3YPzkc9FiLgvNUI3sI7e",
+        "user": "helloyork",
+        "headless": true,
+        "video": false,
+        "accessKey": "ZeLuyvLLdzRtCfMTnA0uYDhImCKgjtCGiwpNAn7EAe6Pa4OHtb",
         "network": true
     }
 }

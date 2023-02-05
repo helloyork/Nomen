@@ -64,7 +64,7 @@
 				done = true;
 				srcl = done && v.ok ? `/book/${srcdoc}` : 'about:blank';
 				// console.log(v);
-				err = 'Puppeteer | 渲染模式：Server-side rendering | 脚本：允许';
+				err = 'Puppeteer | 渲染模式：Server-side rendering | 脚本：允许 | 剩余积分:'+Math.round(v.point);
 				message =
 					'支持我：资助我以抵消服务器维护成本、网站编写的时间成本以及获得一个额外的[网页针对性优化席位]；访问会对服务器造成流量压力，并且耗尽WebDriver的总运行时常，资助可以帮助我继续开发和不断优化Nomen Proxy，这对我很有帮助';
 				btcontent = '加载';
@@ -112,6 +112,7 @@
 		<button on:click={fetchHandler} {disabled}>
 			{btcontent}
 		</button>
+		<button on:click={()=>{localStorage.clear()}}>清除缓存</button>
 	</div>
 	<br />
 	<p>{state}</p>
