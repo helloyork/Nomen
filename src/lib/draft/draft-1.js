@@ -1,7 +1,7 @@
 import axios from "axios";
 import fs from "fs"
 
-let url = "https://s2.baozimh.com/scomic/wuliandianfeng-pikapi/0/1-wjoh/6.jpg"
+let url = "https://i1.hdslb.com/bfs/archive/ce87c70291923856a08ab2cf8e26c6d757c32317.jpg@672w_378h_1c_!web-home-common-cover"
 
 axios.get(url, {
     responseType: 'stream',

@@ -24,5 +24,20 @@
 </script>
 
 {#if loadt}
+	<div class="nomenproxydiv"><h6 class="nomenproxy">Powered By Nomen Proxy (Free Edition)</h6></div>
 	{@html fhtml}
 {/if}
+
+<style>
+	.nomenproxy {
+		position: fixed;
+		z-index: 214748364;
+		margin: auto;
+		color: rgba(0, 0, 0, 0.34);
+	}
+	.nomenproxydov {
+		position: fixed;
+		z-index: 214748363;
+		margin: auto;
+	}
+</style>

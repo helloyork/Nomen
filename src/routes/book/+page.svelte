@@ -41,7 +41,7 @@
 	}
 	async function fetchHandler() {
 		btcontent = '正在加载';
-		state = '请求发送成功 正在尝试启动... (启动约需20秒~40秒)';
+		state = '请求发送成功 正在尝试启动... (启动约需1~2分钟)';
 		disabled = true;
 		let tgUrl = src;
 		fetch('/puppeteer', {

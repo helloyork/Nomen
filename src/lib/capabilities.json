@@ -4,11 +4,10 @@
     "LT:Options": {
         "platform": "Windows 10",
         "build": "puppeteer-build-1",
-        "name": "My first Puppeteer test",
-        "resolution": "1366x768",
+        "name": "Puppeteer test",
+        "resolution": "1680x1050",
         "user": "helloyork",
         "headless": true,
-        "video": false,
         "accessKey": "ZeLuyvLLdzRtCfMTnA0uYDhImCKgjtCGiwpNAn7EAe6Pa4OHtb",
         "network": true
     }

@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 
 import puppeteer from "puppeteer";
 import cheerio from "cheerio";
@@ -6,11 +6,13 @@ import axios from "axios";
 import capabilities from './capabilities.json' assert { type: "json" };
 import http from 'http';
 import https from 'https';
+import fs from "fs"
 import { sql } from "./log/user.log.js";
 import { check } from './user.identify.js';
 import { write } from "./webdata/webdata.js";
 import { userread, userwrite } from "./user/user.manage.js";
 import { rejects } from "assert";
+import md5 from "md5";
 
 
 export async function run(nickname, password, url) {
@@ -66,7 +68,7 @@ async function browser(url, username, password) {
                 "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
                 "Accept-Encoding": "gzip, deflate, br",
                 "Accept-Language": "en-US,en;q=0.5",
-                "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 14_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1",
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36 Edg/109.0.1518.70",
                 "Cookie": "",
                 "Referer": url,
                 "Referrer": url,
@@ -82,7 +84,7 @@ async function browser(url, username, password) {
                 "Content-Type": "text/html"
             }
         ];
-        var imageNormal = ['https://s1.baozimh.com'];
+        var imageNormal = ['s1.baozimh.com', 'i2.hdslb.com', 'i1.hdslb.com', 'i0.hdslb.com'];
         console.log('[Puppeteer] Try Connecting');
         var browser = await puppeteer.connect({
             browserWSEndpoint:
@@ -121,14 +123,25 @@ async function browser(url, username, password) {
         }
         async function getImageNormal(url) {
             return new Promise((resolve, rejects) => {
-                axios.get(url, {
-                    responseType: 'arraybuffer',
-                    headers: header[Math.floor(Math.random() * header.length)]
-                }).then(response => {
-                    console.log(`+[Axios ImageNormal] Done get ${url}`);
-                    const buffer = new Buffer.from(response.data, 'binary').toString('base64');
-                    resolve(`data:${response.headers['content-type']};base64,${buffer}`);
-                }).catch(err => rejects(err))
+                try {
+                    axios.get(url, {
+                        responseType: 'arraybuffer',
+                        headers: header[Math.floor(Math.random() * header.length)]
+                    }).then(response => {
+                        console.log(`+[Axios ImageNormal] Try get ${url}`);
+                        let path = `src/static/img/user/${username}/${md5(response.data)}.${response.headers['content-type'].split('/')[1]}`;
+                        fs.mkdirSync(`src/static/img/user/${username}`, { recursive: true });
+                        fs.writeFileSync(path, response.data)
+                        console.log(`+[File System][Axios ImageNormal] Write ${path}`);
+                        resolve(`/${path}`);
+                    }).catch(err => {
+                        console.log(`-[Axios ImageNormal] Error get ${url}`);
+                        resolve(url);
+                    })
+                } catch (err) {
+                    resolve(url);
+                    console.log(`=[Axios ImageNormal] Error get ${url}`);
+                }
             })
         }
         async function getImageData(urle) {
@@ -138,11 +151,14 @@ async function browser(url, username, password) {
                     responseType: 'arraybuffer',
                     headers: header[Math.floor(Math.random() * header.length)]
                 });
-                console.log(`+[Axios ScrapingAnt] Done get ${urle}`)
-                const buffer = new Buffer.from(response.data, 'binary').toString('base64');
-                return `data:${response.headers['content-type']};base64,${buffer}`;
+                console.log(`+[Axios ScrapingAnt] Try get ${urle}`);
+                let path = `src/static/img/user/${username}/${md5(response.data)}.${response.headers['content-type'].split('/')[1]}`;
+                fs.mkdirSync(`src/static/img/user/${username}`, { recursive: true });
+                response.data.pipe(fs.createWriteStream(path));
+                return `/${path}`;
             } catch (err) {
                 console.log('[Axios ScrapingAnt] Error');
+                return '';
             }
         }
         sql(({ insert }) => {
@@ -165,15 +181,13 @@ async function browser(url, username, password) {
         let images = $("img");
         for (let i = 0; i < images.length; i++) {
             let src = images[i].attribs.src;
-            if (src.startsWith("//")) src = `https:${src}`;
-            else if (src.startsWith("/")) src = `${tUrl.origin}${src}`;
-            if (await normalGetData(src)) {
-                if (imageNormal.includes((new URL(src)).origin)) {
-                    $(images[i]).attr('src', await getImageNormal(src));
-                } else $(images[i]).attr('src', src);
-            } else {
-                $(images[i]).attr('src', await getImageData(src));
-            }
+            if (src && src.startsWith("//")) src = `https:${src}`;
+            else if (src && src.startsWith("/")) src = `${tUrl.origin}${src}`;
+            await normalGetData(src)
+            if (src&&imageNormal.includes(((new URL(src)).host).split('www.').join(''))) {
+                $(images[i]).attr('src', await getImageNormal(src));
+            } else $(images[i]).attr('src', src);
+            if (tUrl.origin.includes('bilibili')) await sleep(500)
         }
         $("link[href^='/'], script[src^='/']").each((i, el) => {
             const $this = $(el);
@@ -183,15 +197,16 @@ async function browser(url, username, password) {
                 $this.attr("src", `https:${$this.attr("src")}`);
             }
         })
+        $('source').remove();
         $("a").each((i, el) => {
             const $this = $(el);
             if ($this.attr("href")) {
-                if ($this.attr("href").startsWith('/')) {
+                if ($this.attr("href") && $this.attr("href")?.startsWith('/')) {
                     $this.attr("href", `/book?note=${btoa(tUrl.origin + $this.attr("href"))}`);
                 } else $this.attr("href", `/book?note=${btoa($this.attr("href"))}`);
             }
         })
-
+        
         let result = $.html();
         if (optimisation[target] !== undefined) result = optimisation[target]($, result);
         console.log('[Puppeteer] +Done Getting PageResources');
@@ -200,7 +215,7 @@ async function browser(url, username, password) {
         console.log(`[WebData] ${webdata}`);
         console.log('[Database webdata.db] +Done');
 
-        uservalue.point -= (Date.now() - start) / 1000 + 10;
+        uservalue.point -= (Date.now() - start) / 1000 + 50;
         await userwrite(username, password, JSON.stringify(uservalue))
         console.log(`=== ${new Date().toDateString()} Task Stop in ${(Date.now() - start) / 1000} s ===`);;
         return { ok: true, resolve: true, error: null, webdata, point: uservalue.point };
