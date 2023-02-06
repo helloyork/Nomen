@@ -1,5 +1,7 @@
 <script>
-    onMount(() => {
+    import { onMount } from 'svelte';
+	
+	onMount(() => {
 		state = '端点初始化完成';
 		disabled = false;
 		pageurl = new URL(window.location.href);
