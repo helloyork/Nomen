@@ -1,7 +1,8 @@
+//@ts-nocheck
+
 import sqlite3 from "sqlite3";
 import md5 from "md5";
 const database = new (sqlite3.verbose()).Database('webdata.db', (err) => {
-    console.log(`[Database: webdata.db] Connect`)
     if (err) console.error(err);
 })
 _sql`
@@ -13,7 +14,6 @@ _sql`
 `;
 
 export async function write(origin, content) {
-    console.log(`[Database: webdata.db] Write`)
     return new Promise((resolve, reject) => {
         read(md5(content)).then(rows => {
             if (rows.length <= 0) {
@@ -21,7 +21,6 @@ export async function write(origin, content) {
                     .then(() => { console.log(`[Database: webdata.db] Write Done`); resolve(md5(content)) })
                     .catch(err => reject(err));
             } else {
-                console.log(`[Database: webdata.db] Has Same`)
                 return md5(content);
             }
         })

@@ -1,5 +1,6 @@
+//@ts-nocheck
+
 import sqlite3 from "sqlite3";
-import md5 from "md5";
 const database = new (sqlite3.verbose()).Database('user.db', (err) => {
     console.log(`[Database: user.db] Connect`)
     if (err) console.error(err);
@@ -13,7 +14,6 @@ _sql`
 `;
 
 export async function userwrite(username, password,value) {
-    console.log(`[Database: user.db] Write`)
     return new Promise((resolve, reject) => {
         userread(username).then(rows => {
             if (rows.length <= 0) {
@@ -35,7 +35,6 @@ export async function userwrite(username, password,value) {
  */
 export async function userread(username) {
     return new Promise((resolve, reject) => {
-        console.log(`[Database: user.db] Read`)
         database.all(`SELECT * FROM user WHERE username = ?`, username, (err, rows) => {
             if (err) reject(err);
             else resolve(rows);
