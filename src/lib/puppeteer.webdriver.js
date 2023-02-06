@@ -133,8 +133,8 @@ async function browser(url, username, password) {
                         headers: header[Math.floor(Math.random() * header.length)]
                     }).then(response => {
                         console.log(`+[Axios ImageNormal] Try get ${url}`);
-                        let path = `src/static/img/user/${username}/${md5(response.data)}.${response.headers['content-type'].split('/')[1]}`;
-                        fs.mkdirSync(`src/static/img/user/${username}`, { recursive: true });
+                        let path = `src/static/img/user/${username}/${(new URL(url)).origin}/${md5(response.data)}.${response.headers['content-type'].split('/')[1]}`;
+                        fs.mkdirSync(`src/static/img/user/${username}/${(new URL(url)).origin}`, { recursive: true });
                         fs.writeFileSync(path, response.data)
                         console.log(`+[File System][Axios ImageNormal] Write ${path}`);
                         resolve(`/${path}`);
