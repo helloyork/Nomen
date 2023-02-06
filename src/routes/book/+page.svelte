@@ -1,7 +1,5 @@
 <script>
 	import { onMount } from 'svelte';
-	import { browser } from '$app/environment';
-	import { page } from '$app/stores';
 
 	let srcdoc;
 	let src = '';
@@ -62,25 +60,11 @@
 				srcdoc = v.webdata;
 				done = true;
 				srcl = done && v.ok ? `/book/${srcdoc}` : 'about:blank';
-				// console.log(v);
 				err = 'Puppeteer | 渲染模式：Server-side rendering | 脚本：允许 | 剩余积分:'+Math.round(v.point);
 				message =
 					'支持我：资助我以抵消服务器维护成本、网站编写的时间成本以及获得一个额外的[网页针对性优化席位]，资助10元以上可以克隆项目并且无限访问，附带后三个版本的更新与错误修复；访问会对服务器造成流量压力，并且耗尽WebDriver的总运行时常，资助可以帮助我继续开发和不断优化Nomen Proxy，这对我很有帮助';
 				btcontent = '加载';
 				log='更新日志: NomenProxy@1.2.7 | 优化ServerSide Rending；针对小说和漫画网站进行优化，加载完整的资源；更新链接的点击事件并自动启动WebDriver与渲染器；优化资源获取，扫描图片资源；优化速度'
-				
-				// @ts-ignore
-				// const links = document.querySelector("iframe").contentWindow.document.querySelectorAll("a");
-				// links.forEach(e=>{
-				// 	if(e.href.startsWith('/'))e.href = (new URL(tgUrl)).origin+e.href;
-				// 	e.addEventListener("click",()=>{
-				// 		if(!disabled && e.href) {
-				// 			src = e.href;
-				// 			fetchHandler();
-				// 		}
-				// 		console.log('click!')
-				// 	})
-				// })
 
 				setTimeout(() => {
 					disabled = false;
