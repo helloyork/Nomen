@@ -33,7 +33,6 @@
 		windowl = window;
 		if (pageurl.searchParams.get('note') !== null && jugeUrl(window.atob(pageurl.searchParams.get('note')))) {
 			src=window.atob(pageurl.searchParams.get('note'));
-			fetchHandler();
 		}
 	});
 	function jugeUrl(t) {
@@ -66,9 +65,9 @@
 				// console.log(v);
 				err = 'Puppeteer | 渲染模式：Server-side rendering | 脚本：允许 | 剩余积分:'+Math.round(v.point);
 				message =
-					'支持我：资助我以抵消服务器维护成本、网站编写的时间成本以及获得一个额外的[网页针对性优化席位]；访问会对服务器造成流量压力，并且耗尽WebDriver的总运行时常，资助可以帮助我继续开发和不断优化Nomen Proxy，这对我很有帮助';
+					'支持我：资助我以抵消服务器维护成本、网站编写的时间成本以及获得一个额外的[网页针对性优化席位]，资助10元以上可以克隆项目并且无限访问，附带后三个版本的更新与错误修复；访问会对服务器造成流量压力，并且耗尽WebDriver的总运行时常，资助可以帮助我继续开发和不断优化Nomen Proxy，这对我很有帮助';
 				btcontent = '加载';
-				log='更新日志: NomenProxy@1.1.9 | 优化ServerSide Rending；针对小说和漫画网站进行优化，加载完整的资源；更新链接的点击事件并自动启动WebDriver与渲染器；'
+				log='更新日志: NomenProxy@1.2.7 | 优化ServerSide Rending；针对小说和漫画网站进行优化，加载完整的资源；更新链接的点击事件并自动启动WebDriver与渲染器；优化资源获取，扫描图片资源；优化速度'
 				
 				// @ts-ignore
 				// const links = document.querySelector("iframe").contentWindow.document.querySelectorAll("a");
@@ -120,7 +119,7 @@
 	<p>{message}</p>
 	<p>{log}</p>
 	<button on:click={openWindow}>{done ? '全屏' : ''}</button>
-	<iframe class="ifr" src={srcl} border="0" frameborder="no" framespacing="0" title="nomenawa" />
+	<iframe class="ifr" src={srcl} border="0" frameborder="no" framespacing="0" title="nomenawa"/>
 {/if}
 <br />
 

@@ -89,12 +89,6 @@ async function browser(url, username, password) {
             }
         ];
         var imageNormal = ['s1.baozimh.com', 'i2.hdslb.com', 'i1.hdslb.com', 'i0.hdslb.com'];
-        console.log('[Puppeteer] Try Connecting');
-        var browser = await puppeteer.connect({
-            browserWSEndpoint:
-                `wss://cdp.lambdatest.com/puppeteer?capabilities=${encodeURIComponent(JSON.stringify(capabilities))}`,
-        })
-        var page = await browser.newPage();
         var user = await userread(username);
         if (user.length <= 0) {
             await userwrite(username, password, JSON.stringify(init));
@@ -102,6 +96,12 @@ async function browser(url, username, password) {
         }
         var uservalue = JSON.parse(user[0].value);
         if (uservalue.point <= 20) return { ok: false, resolve: true, error: '可用积分不足', result: null, }
+        console.log('[Puppeteer] Try Connecting');
+        var browser = await puppeteer.connect({
+            browserWSEndpoint:
+                `wss://cdp.lambdatest.com/puppeteer?capabilities=${encodeURIComponent(JSON.stringify(capabilities))}`,
+        })
+        var page = await browser.newPage();
         await page.setViewport({
             width: 1024,
             height: 14000,
@@ -189,7 +189,9 @@ async function browser(url, username, password) {
         $("a").each((i, el) => {
             const $this = $(el);
             if ($this.attr("href") && !$this.attr("href").includes('javascript') && !/[\u4e00-\u9fa5]/.test($this.attr("href"))) {
-                if ($this.attr("href")?.startsWith('/')) {
+                if ($this.attr("href")?.startsWith('//')){
+                    $this.attr("href", `/book?note=${btoa('https:' + $this.attr("href"))}`);
+                } else if ($this.attr("href")?.startsWith('/')) {
                     $this.attr("href", `/book?note=${btoa(tUrl.origin + $this.attr("href"))}`);
                 } else {
                     $this.attr("href", `/book?note=${btoa($this.attr("href"))}`);

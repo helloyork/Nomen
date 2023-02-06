@@ -24,7 +24,7 @@
 </script>
 
 {#if loadt}
-	<div class="nomenproxydiv"><h6 class="nomenproxy">Powered By Nomen Proxy (Free Edition)</h6></div>
+	<div class="nomenproxydiv"><h6 class="nomenproxy">Powered By Nomen Proxy (Free Edition) {data.slug}</h6></div>
 	{@html fhtml}
 {/if}
 
@@ -33,11 +33,12 @@
 		position: fixed;
 		z-index: 214748364;
 		margin: auto;
-		color: rgba(0, 0, 0, 0.34);
+		color: rgba(0, 0, 0, 0.44);
 	}
 	.nomenproxydiv {
 		position: fixed;
 		z-index: 214748363;
-		margin: auto;
+		margin-top: 10px;
+		margin-left: 10px;
 	}
 </style>
