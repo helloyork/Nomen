@@ -1,7 +1,7 @@
 //@ts-nocheck
 
 import sqlite3 from "sqlite3";
-const database = new (sqlite3.verbose()).Database('src/lib/user/user.db', (err) => {
+const database = new (sqlite3.verbose()).Database('./user.db', (err) => {
     console.log(`[Database: user.db] Connect`)
     if (err) console.error(err);
 })
@@ -11,7 +11,9 @@ _sql`
         password TEXT NOT NULL,
         value TEXT
     )
-`;
+`.then(()=>{
+    _sql`DELETE FROM user`
+})
 
 export async function userwrite(username, password,value) {
     return new Promise((resolve, reject) => {

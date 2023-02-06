@@ -95,7 +95,7 @@ async function browser(url, username, password) {
             user = await userread(username);
         }
         var uservalue = JSON.parse(user[0].value);
-        if (uservalue.point <= 20) return { ok: false, resolve: true, error: '可用积分不足', result: null, }
+        if (uservalue.point <= 20) return { ok: false, resolve: true, error: '可用积分不足', result: null,point:uservalue.point }
         console.log('[Puppeteer] Try Connecting');
         var browser = await puppeteer.connect({
             browserWSEndpoint:
