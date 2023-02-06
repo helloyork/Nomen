@@ -11,9 +11,7 @@ _sql`
         password TEXT NOT NULL,
         value TEXT
     )
-`.then(()=>{
-    _sql`DELETE FROM user`
-})
+`;
 
 export async function userwrite(username, password,value) {
     return new Promise((resolve, reject) => {
