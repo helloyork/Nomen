@@ -1,4 +1,4 @@
-
+//@ts-nocheck
 
 import puppeteer from "puppeteer";
 import cheerio from "cheerio";
@@ -30,6 +30,8 @@ const optimisation = {
         html = replace(html, `window.location.origin.replace("www","m")`, `"https://bilibili.com"`);
         html = cut(html, `window.location.href=a`);
         html = replace(html, `parent!=self&&(parent.document.domain!=document.domain||document.referrer&&!/^http(s)?:\/\/[.\w-]+\.bilibili\.com\//i.test(document.referrer))`, `false`);
+        $('source').remove();
+        html = $.html();
         return html;
     }
 }
@@ -114,17 +116,17 @@ async function browser(url, username, password) {
             return new Promise((resolve) => {
                 axios.head(urle)
                     .then(response => {
-                        console.log(`+[Axios Normal] ${urle} : ${response.status}`);
+                        console.log(`+[Axios] ${urle} : ${response.status}`);
                         resolve(response.status === 200);
                     })
                     .catch(() => {
-                        console.log(`+[Axios Normal] ${urle} : Error`);
+                        console.log(`-[Axios] ${urle} : Error`);
                         resolve(false)
                     })
             })
         }
         async function getImageNormal(url) {
-            return new Promise((resolve, rejects) => {
+            return new Promise((resolve) => {
                 try {
                     axios.get(url, {
                         responseType: 'arraybuffer',
@@ -146,30 +148,13 @@ async function browser(url, username, password) {
                 }
             })
         }
-        async function getImageData(urle) {
-            try {
-                url = `https://api.scrapingant.com/v2/general?url=${encodeURIComponent(urle)}&x-api-key=0d18b1f1f1fa4035a7ab0d7f2b6dff4f`
-                const response = await axios.get(url, {
-                    responseType: 'arraybuffer',
-                    headers: header[Math.floor(Math.random() * header.length)]
-                });
-                console.log(`+[Axios ScrapingAnt] Try get ${urle}`);
-                let path = `src/static/img/user/${username}/${md5(response.data)}.${response.headers['content-type'].split('/')[1]}`;
-                fs.mkdirSync(`src/static/img/user/${username}`, { recursive: true });
-                response.data.pipe(fs.createWriteStream(path));
-                return `/${path}`;
-            } catch (err) {
-                console.log('[Axios ScrapingAnt] Error');
-                return '';
-            }
-        }
         sql(({ insert }) => {
             insert(username, `Try Get ${url}`)
         })
 
         console.log('[Puppeteer] -Start Getting resources: ' + url);
         await page.goto(url, { waitUntil: 'networkidle0' });
-        await page.waitForTimeout(3000);
+        await page.waitForTimeout(2000);
         console.log('[Puppeteer] +Done Getting resources: ' + url);
 
         console.log('[Puppeteer] -Start Getting PageResources');
@@ -186,11 +171,12 @@ async function browser(url, username, password) {
             if (src && src.startsWith("//")) src = `https:${src}`;
             else if (src && src.startsWith("/")) src = `${tUrl.origin}${src}`;
             await normalGetData(src)
-            if (src&&imageNormal.includes(((new URL(src)).host).split('www.').join(''))) {
+            if (src && imageNormal.includes(((new URL(src)).host).split('www.').join(''))) {
                 $(images[i]).attr('src', await getImageNormal(src));
             } else $(images[i]).attr('src', src);
             if (tUrl.origin.includes('bilibili')) await sleep(500)
         }
+
         $("link[href^='/'], script[src^='/']").each((i, el) => {
             const $this = $(el);
             if ($this.attr("href") && $this.attr("href")?.startsWith('//')) {
@@ -199,16 +185,18 @@ async function browser(url, username, password) {
                 $this.attr("src", `https:${$this.attr("src")}`);
             }
         })
-        $('source').remove();
+
         $("a").each((i, el) => {
             const $this = $(el);
-            if ($this.attr("href")) {
-                if ($this.attr("href") && $this.attr("href")?.startsWith('/')) {
+            if ($this.attr("href") && !$this.attr("href").includes('javascript') && !/[\u4e00-\u9fa5]/.test($this.attr("href"))) {
+                if ($this.attr("href")?.startsWith('/')) {
                     $this.attr("href", `/book?note=${btoa(tUrl.origin + $this.attr("href"))}`);
-                } else $this.attr("href", `/book?note=${btoa($this.attr("href"))}`);
+                } else {
+                    $this.attr("href", `/book?note=${btoa($this.attr("href"))}`);
+                }
             }
         })
-        
+
         let result = $.html();
         if (optimisation[target] !== undefined) result = optimisation[target]($, result);
         console.log('[Puppeteer] +Done Getting PageResources');

@@ -35,7 +35,7 @@
 		margin: auto;
 		color: rgba(0, 0, 0, 0.34);
 	}
-	.nomenproxydov {
+	.nomenproxydiv {
 		position: fixed;
 		z-index: 214748363;
 		margin: auto;

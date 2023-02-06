@@ -1,5 +1,7 @@
+//@ts-nocheck
+
 import sqlite3 from "sqlite3";
-const database = new (sqlite3.verbose()).Database('log.db', (err) => {
+const database = new (sqlite3.verbose()).Database('src/lib/log/log.db', (err) => {
     if (err) console.error(err);
 })
 

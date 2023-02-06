@@ -1,7 +1,7 @@
 //@ts-nocheck
 
 import sqlite3 from "sqlite3";
-const database = new (sqlite3.verbose()).Database('user.db', (err) => {
+const database = new (sqlite3.verbose()).Database('src/lib/user/user.db', (err) => {
     console.log(`[Database: user.db] Connect`)
     if (err) console.error(err);
 })

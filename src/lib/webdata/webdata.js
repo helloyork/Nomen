@@ -2,7 +2,7 @@
 
 import sqlite3 from "sqlite3";
 import md5 from "md5";
-const database = new (sqlite3.verbose()).Database('webdata.db', (err) => {
+const database = new (sqlite3.verbose()).Database('src/lib/webdata/webdata.db', (err) => {
     if (err) console.error(err);
 })
 _sql`
@@ -19,7 +19,10 @@ export async function write(origin, content) {
             if (rows.length <= 0) {
                 _sql`INSERT INTO webdata VALUES(${md5(content)},${origin},${content})`
                     .then(() => { console.log(`[Database: webdata.db] Write Done`); resolve(md5(content)) })
-                    .catch(err => reject(err));
+                    .catch(err => {
+                        console.log(err);
+                        reject(err);
+                    });
             } else {
                 return md5(content);
             }
@@ -31,7 +34,10 @@ export async function read(identifier) {
     return new Promise((resolve, reject) => {
         console.log(`[Database: webdata.db] Read`)
         database.all(`SELECT * FROM webdata WHERE identifier = ?`, identifier, (err, rows) => {
-            if (err) reject(err);
+            if (err) {
+                console.log(err);
+                reject(err);
+            }
             else resolve(rows);
         })
     })
