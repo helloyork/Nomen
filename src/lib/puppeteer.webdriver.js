@@ -3,15 +3,17 @@
 import puppeteer from "puppeteer";
 import cheerio from "cheerio";
 import axios from "axios";
-import capabilities from './capabilities.json' assert { type: "json" };
+
 import http from 'http';
 import https from 'https';
-import fs from "fs"
+import fs from "fs";
+
+import capabilities from './capabilities.json' assert { type: "json" };
+
 import { sql } from "./log/user.log.js";
-import { check } from './user.identify.js';
+import { check } from './identify.js';
 import { write } from "./webdata/webdata.js";
 import { userread, userwrite } from "./user/user.manage.js";
-import { rejects } from "assert";
 import md5 from "md5";
 
 

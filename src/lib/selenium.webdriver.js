@@ -4,7 +4,7 @@ import webdriver from "selenium-webdriver";
 import capabilities from '$lib/capabilities.json';
 import cheerio from "cheerio";
 import { sql } from "./log/user.log";
-import { check } from '$lib/user.identify';
+import { check } from '$lib/identify';
 import http from 'http';
 import https from 'https';
 import { write } from "./webdata/webdata";

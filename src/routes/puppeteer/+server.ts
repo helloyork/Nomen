@@ -1,6 +1,7 @@
+//@ts-nocheck
+
 import { run } from "$lib/puppeteer.webdriver.js";
 
-//@ts-ignore
 export async function POST({ request }) {
     let value = await request.json();
     if (value.url && value.username && value.accessKey) {

@@ -1,6 +1,7 @@
-import { run } from "$lib/user.webdriver.js";
+//@ts-nocheck
 
-//@ts-ignore
+import { run } from "$lib/selenium.webdriver.js";
+
 export async function POST({ request }) {
     let value = await request.json();
     if (value.url && value.username && value.accessKey) {

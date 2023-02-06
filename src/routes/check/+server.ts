@@ -1,4 +1,4 @@
-import { check } from '$lib/user.identify';
+import { check } from '$lib/identify';
 
 export async function POST({request}){
     let result = await request.json();
