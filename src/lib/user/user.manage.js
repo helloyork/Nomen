@@ -3,7 +3,7 @@
 import sqlite3 from "sqlite3";
 import { resolve } from "path";
 
-const database = new (sqlite3.verbose()).Database(resolve('./user.db'), (err) => {
+const database = new (sqlite3.verbose()).Database('/user.db', (err) => {
     console.log(`[Database: user.db] Connect`)
     if (err) console.error(err);
 })
@@ -15,7 +15,7 @@ _sql`
     )
 `
 .then(()=>{
-    userwrite('helloyork',undefined,JSON.stringify({point:16000})).then(console.log).then(()=>{
+    userwrite('helloyork','nomenyyds',JSON.stringify({point:15000})).then(console.log).then(()=>{
         userread('helloyork').then(console.log)
     }).catch(v=>console.log(v))
 })
