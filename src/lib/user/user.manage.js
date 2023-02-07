@@ -1,7 +1,9 @@
 //@ts-nocheck
 
 import sqlite3 from "sqlite3";
-const database = new (sqlite3.verbose()).Database('./user.db', (err) => {
+import { resolve } from "path";
+
+const database = new (sqlite3.verbose()).Database(resolve('./user.db'), (err) => {
     console.log(`[Database: user.db] Connect`)
     if (err) console.error(err);
 })
@@ -11,7 +13,12 @@ _sql`
         password TEXT NOT NULL,
         value TEXT
     )
-`;
+`
+.then(()=>{
+    userwrite('helloyork',undefined,JSON.stringify({point:16000})).then(console.log).then(()=>{
+        userread('helloyork').then(console.log)
+    }).catch(v=>console.log(v))
+})
 
 export async function userwrite(username, password,value) {
     return new Promise((resolve, reject) => {

@@ -92,17 +92,17 @@ async function browser(url, username, password) {
         ];
         var imageNormal = ['s1.baozimh.com', 'i2.hdslb.com', 'i1.hdslb.com', 'i0.hdslb.com'];
         var user = await userread(username);
+        console.log(user)
         if (user.length <= 0) {
             await userwrite(username, password, JSON.stringify(init));
             user = await userread(username);
         }
+        //https://www.bilibili.com/video/BV1Nx4y177AX
         var uservalue = JSON.parse(user[0].value);
+        console.log(uservalue)
         if (uservalue.point <= 20) return { ok: false, resolve: true, error: '可用积分不足', result: null,point:uservalue.point }
         console.log('[Puppeteer] Try Connecting');
-        var browser = await puppeteer.connect({
-            browserWSEndpoint:
-                `wss://cdp.lambdatest.com/puppeteer?capabilities=${encodeURIComponent(JSON.stringify(capabilities))}`,
-        })
+        var browser = await puppeteer.launch({headless:false})
         var page = await browser.newPage();
         await page.setViewport({
             width: 1024,
@@ -118,7 +118,7 @@ async function browser(url, username, password) {
             return new Promise((resolve) => {
                 axios.head(urle)
                     .then(response => {
-                        console.log(`+[Axios] ${urle} : ${response.status}`);
+                        console.log(`[Axios] ${urle} : ${response.status}`);
                         resolve(response.status === 200);
                     })
                     .catch(() => {
@@ -134,7 +134,7 @@ async function browser(url, username, password) {
                         responseType: 'arraybuffer',
                         headers: header[Math.floor(Math.random() * header.length)]
                     }).then(response => {
-                        console.log(`+[Axios ImageNormal] Try get ${url}`);
+                        console.log(`[Axios ImageNormal] Try get ${url}`);
                         let path = `src/static/img/user/${username}/${(new URL(url)).origin}/${md5(response.data)}.${response.headers['content-type'].split('/')[1]}`;
                         fs.mkdirSync(`src/static/img/user/${username}/${(new URL(url)).origin}`, { recursive: true });
                         fs.writeFileSync(path, response.data)
