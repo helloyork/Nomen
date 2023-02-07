@@ -95,7 +95,7 @@
 		<button on:click={fetchHandler} {disabled}>
 			{btcontent}
 		</button>
-		<button on:click={()=>{localStorage.clear()}}>清除缓存</button>
+		<button on:click={()=>{if(confirm('确认清除缓存？清除缓存后会退出登录，仅在登录失效的情况下使用')){localStorage.clear();location.href='/login';}}}>清除缓存</button>
 	</div>
 	<br />
 	<p>{state}</p>

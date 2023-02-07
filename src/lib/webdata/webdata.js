@@ -2,6 +2,7 @@
 
 import sqlite3 from "sqlite3";
 import md5 from "md5";
+import fs from "fs";
 const database = new (sqlite3.verbose()).Database('src/lib/webdata/webdata.db', (err) => {
     if (err) console.error(err);
 })
@@ -39,6 +40,34 @@ export async function read(identifier) {
                 reject(err);
             }
             else resolve(rows);
+        })
+    })
+}
+
+export async function view() {
+    return new Promise((resolve, reject) => {
+        console.log(`[Database: webdata.db] View`)
+        database.all(`SELECT identifier,origin FROM webdata`, (err, rows) => {
+            if (err) {
+                console.log(err);
+                reject(err);
+            }
+            else fs.stat('src/lib/webdata/webdata.db', (err, stats) => {
+                if (err) console.error(err);
+                else resolve({rows:rows,size:stats.size});
+            });
+        })
+    })
+}
+
+export async function clear(identifier) {
+    return new Promise((resolve, reject) => {
+        console.log(`[Database: webdata.db] Clear`)
+        database.all(`DELETE FROM webdata WHERE identifier = ?`,identifier, (err, rows) => {
+            if (err) {
+                console.log(err);
+                reject(err);
+            } else resolve(rows);
         })
     })
 }

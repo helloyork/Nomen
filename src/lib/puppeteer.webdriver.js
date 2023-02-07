@@ -15,12 +15,14 @@ import { check } from './identify.js';
 import { write } from "./webdata/webdata.js";
 import { userread, userwrite } from "./user/user.manage.js";
 import md5 from "md5";
+import { env } from "process";
 
 
 export async function run(nickname, password, url) {
     let res = check(nickname, password)
     if (!res) return { ok: false, resolve: false, error: 'Wrong username or accessKey', result: null, }
-    return await browser(url, res.username, res.accessKey);
+    let result=await browser(url, res.username, res.accessKey);
+    return result;
 }
 
 
@@ -104,7 +106,7 @@ async function browser(url, username, password) {
         var page = await browser.newPage();
         await page.setViewport({
             width: 1024,
-            height: 14000,
+            height: 30000,
             deviceScaleFactor: 1,
         });
         await page.setExtraHTTPHeaders(header[Math.floor(Math.random() * header.length)]);
@@ -170,11 +172,9 @@ async function browser(url, username, password) {
             let src = images[i].attribs.src;
             if (src && src.startsWith("//")) src = `https:${src}`;
             else if (src && src.startsWith("/")) src = `${tUrl.origin}${src}`;
-            await normalGetData(src)
             if (src && imageNormal.includes(((new URL(src)).host).split('www.').join(''))) {
                 $(images[i]).attr('src', await getImageNormal(src));
             } else $(images[i]).attr('src', src);
-            if (tUrl.origin.includes('bilibili')) await sleep(500)
         }
 
         $("link[href^='/'], script[src^='/']").each((i, el) => {
