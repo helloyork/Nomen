@@ -40,6 +40,7 @@
 		"chrome": "^0.1.0",
 		"chromedriver": "^109.0.0",
 		"chromium": "^3.0.3",
+		"dotenv": "^16.0.3",
 		"geckodriver": "^3.2.0",
 		"md5": "^2.3.0",
 		"npm": "^9.4.0",

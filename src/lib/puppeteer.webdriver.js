@@ -7,6 +7,7 @@ import axios from "axios";
 import http from 'http';
 import https from 'https';
 import fs from "fs";
+import md5 from "md5";
 
 import capabilities from './capabilities.json' assert { type: "json" };
 
@@ -14,14 +15,16 @@ import { sql } from "./log/user.log.js";
 import { check } from './identify.js';
 import { write } from "./webdata/webdata.js";
 import { userread, userwrite } from "./user/user.manage.js";
-import md5 from "md5";
-import { env } from "process";
+import { envread, envwrite } from "./env/env.js"
 
 
 export async function run(nickname, password, url) {
     let res = check(nickname, password)
     if (!res) return { ok: false, resolve: false, error: 'Wrong username or accessKey', result: null, }
-    let result=await browser(url, res.username, res.accessKey);
+    // if ((await envread('RUNNING')).running === undefined) await envwrite('RUNNING', { running: true });
+    // if ((await envread('RUNNING')).running) return { ok: false, resolve: false, error: '主程序被占用，请等待其他用户完成请求', result: null, }
+    let result = await browser(url, res.username, res.accessKey);
+    // await envwrite('RUNNING', { running: false });
     return result;
 }
 
@@ -97,7 +100,7 @@ async function browser(url, username, password) {
             user = await userread(username);
         }
         var uservalue = JSON.parse(user[0].value);
-        if (uservalue.point <= 20) return { ok: false, resolve: true, error: '可用积分不足', result: null,point:uservalue.point }
+        if (uservalue.point <= 20) return { ok: false, resolve: true, error: '可用积分不足', result: null, point: uservalue.point }
         console.log('[Puppeteer] Try Connecting');
         var browser = await puppeteer.connect({
             browserWSEndpoint:
@@ -111,6 +114,10 @@ async function browser(url, username, password) {
         });
         await page.setExtraHTTPHeaders(header[Math.floor(Math.random() * header.length)]);
         console.log('[Puppeteer] Browser Ready');
+        console.log('[Puppeteer] -Start Getting resources: ' + url);
+        await page.goto(url, { waitUntil: 'networkidle0' });
+        await page.waitForTimeout(5000);
+        console.log('[Puppeteer] +Done Getting resources: ' + url);
     } catch (err) {
         return { ok: false, resolve: true, error: '无法启动Puppeteer Browser: ' + err, result: null, }
     } try {
@@ -134,7 +141,7 @@ async function browser(url, username, password) {
                         responseType: 'arraybuffer',
                         headers: header[Math.floor(Math.random() * header.length)]
                     }).then(response => {
-                        console.log(`+[Axios ImageNormal] Try get ${url}`);
+                        console.log(`[Axios ImageNormal] Try get ${url}`);
                         let path = `src/static/img/user/${username}/${(new URL(url)).origin}/${md5(response.data)}.${response.headers['content-type'].split('/')[1]}`;
                         fs.mkdirSync(`src/static/img/user/${username}/${(new URL(url)).origin}`, { recursive: true });
                         fs.writeFileSync(path, response.data)
@@ -153,12 +160,6 @@ async function browser(url, username, password) {
         sql(({ insert }) => {
             insert(username, `Try Get ${url}`)
         })
-
-        console.log('[Puppeteer] -Start Getting resources: ' + url);
-        await page.goto(url, { waitUntil: 'networkidle0' });
-        await page.waitForTimeout(2000);
-        console.log('[Puppeteer] +Done Getting resources: ' + url);
-
         console.log('[Puppeteer] -Start Getting PageResources');
         let PageResources = await page.content();
 
@@ -177,19 +178,10 @@ async function browser(url, username, password) {
             } else $(images[i]).attr('src', src);
         }
 
-        $("link[href^='/'], script[src^='/']").each((i, el) => {
-            const $this = $(el);
-            if ($this.attr("href") && $this.attr("href")?.startsWith('//')) {
-                $this.attr("href", `https:${$this.attr("href")}`);
-            } if ($this.attr("src") && $this.attr("src")?.startsWith('//')) {
-                $this.attr("src", `https:${$this.attr("src")}`);
-            }
-        })
-
         $("a").each((i, el) => {
             const $this = $(el);
             if ($this.attr("href") && !$this.attr("href").includes('javascript') && !/[\u4e00-\u9fa5]/.test($this.attr("href"))) {
-                if ($this.attr("href")?.startsWith('//')){
+                if ($this.attr("href")?.startsWith('//')) {
                     $this.attr("href", `/book?note=${btoa('https:' + $this.attr("href"))}`);
                 } else if ($this.attr("href")?.startsWith('/')) {
                     $this.attr("href", `/book?note=${btoa(tUrl.origin + $this.attr("href"))}`);
@@ -198,6 +190,10 @@ async function browser(url, username, password) {
                 }
             }
         })
+        $('head script').each(function () {
+            const script = $(this).remove();
+            $('body').append(script);
+        });
 
         let result = $.html();
         if (optimisation[target] !== undefined) result = optimisation[target]($, result);

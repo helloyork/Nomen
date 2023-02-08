@@ -25,7 +25,8 @@ export async function write(origin, content) {
                         reject(err);
                     });
             } else {
-                return md5(content);
+                console.log(`[Database: webdata.db] Write Done`);
+                resolve(md5(content));
             }
         })
     })
