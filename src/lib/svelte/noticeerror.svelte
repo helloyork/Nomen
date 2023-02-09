@@ -1,4 +1,8 @@
-<div class="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+<script>
+	export let wrong = false;
+</script>
+
+<div class="{wrong?"":"hidden"} relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true">
 	<div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
 
 	<div class="fixed inset-0 z-10 overflow-y-auto">
@@ -30,12 +34,11 @@
 						</div>
 						<div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
 							<h3 class="text-lg font-medium leading-6 text-gray-900" id="modal-title">
-								Deactivate account
+								发生了一些错误
 							</h3>
 							<div class="mt-2">
 								<p class="text-sm text-gray-500">
-									Are you sure you want to deactivate your account? All of your data will be
-									permanently removed. This action cannot be undone.
+									<slot/>
 								</p>
 							</div>
 						</div>
@@ -43,14 +46,10 @@
 				</div>
 				<div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
 					<button
+					on:click={()=>wrong=false}
 						type="button"
 						class="inline-flex w-full justify-center rounded-md border border-transparent bg-red-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm"
-						>Deactivate</button
-					>
-					<button
-						type="button"
-						class="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
-						>Cancel</button
+						>确定</button
 					>
 				</div>
 			</div>

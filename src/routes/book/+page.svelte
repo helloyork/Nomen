@@ -1,5 +1,6 @@
 <script>
-	import { onMount } from 'svelte';
+	import Noticeerror from '$lib/svelte/noticeerror.svelte';
+import { onMount } from 'svelte';
 
 	let srcdoc;
 	let src = '';
@@ -16,6 +17,10 @@
 	let pageurl;
 	let windowl;
 	let log = '';
+	let iswrong={
+		wrong:false,
+		mes:'',
+	}
 
 	onMount(() => {
 		state = '端点初始化完成';
@@ -60,6 +65,10 @@
 				state = v.ok
 					? `启动成功！ 欢迎使用Nomen代理 该代理由Q创立并维护,不承担任何法律责任,请自行承担使用过程中产生的任何问题   请注意！Nomen Proxy目前尚在测试，并不代表最终品质，并且不代表最终产品一定免费   如出现资源丢失或白屏属于正常现象`
 					: `出错了，报错信息：${v.error}`;
+				if(!v.ok){
+					iswrong.mes=v.error
+					iswrong.wrong=true;
+				}
 				srcdoc = v.webdata;
 				done = true;
 				srcl = done && v.ok ? `/book/${srcdoc}` : 'about:blank';
@@ -140,6 +149,7 @@
 		<button on:click={openWindow}>{done ? '全屏' : ''}</button>
 		<iframe class="ifr" src={srcl} border="0" frameborder="no" framespacing="0" title="nomenawa" />
 	</div>
+	<Noticeerror wrong={iswrong.wrong}>{iswrong.mes}</Noticeerror>
 {/if}
 <br />
 
