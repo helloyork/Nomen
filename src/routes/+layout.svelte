@@ -6,6 +6,7 @@
 	import Noticebar from '$lib/svelte/noticebar.svelte';
 	import { onMount } from 'svelte';
 	import '../app.css';
+	import { fade, slide, fly, scale, draw, blur } from 'svelte/transition';
 
 	let loadt = false;
 	onMount(() => {
@@ -34,7 +35,7 @@
 </script>
 
 {#if loadt}
-	<div class="relative bg-white">
+	<div transition:fade class="relative bg-white">
 		<div class="mx-auto max-w-7xl px-6">
 			<div
 				class="flex items-center justify-between border-b-2 border-gray-100 py-3 md:justify-start md:space-x-10"

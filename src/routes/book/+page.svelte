@@ -1,6 +1,7 @@
 <script>
 	import Noticeerror from '$lib/svelte/noticeerror.svelte';
-import { onMount } from 'svelte';
+	import { onMount } from 'svelte';
+	import { fade, slide, fly, scale, draw, blur } from 'svelte/transition';
 
 	let srcdoc;
 	let src = '';
@@ -17,10 +18,10 @@ import { onMount } from 'svelte';
 	let pageurl;
 	let windowl;
 	let log = '';
-	let iswrong={
-		wrong:false,
-		mes:'',
-	}
+	let iswrong = {
+		wrong: false,
+		mes: ''
+	};
 
 	onMount(() => {
 		state = '端点初始化完成';
@@ -65,9 +66,9 @@ import { onMount } from 'svelte';
 				state = v.ok
 					? `启动成功！ 欢迎使用Nomen代理 该代理由Q创立并维护,不承担任何法律责任,请自行承担使用过程中产生的任何问题   请注意！Nomen Proxy目前尚在测试，并不代表最终品质，并且不代表最终产品一定免费   如出现资源丢失或白屏属于正常现象`
 					: `出错了，报错信息：${v.error}`;
-				if(!v.ok){
-					iswrong.mes=v.error
-					iswrong.wrong=true;
+				if (!v.ok) {
+					iswrong.mes = v.error;
+					iswrong.wrong = true;
 				}
 				srcdoc = v.webdata;
 				done = true;
@@ -105,7 +106,7 @@ import { onMount } from 'svelte';
 	}}
 />
 {#if loadt}
-	<div class="index-label">
+	<div transition:fade class="index-label">
 		<div>
 			<label for="price" class="block text-sm font-medium text-gray-700">网址</label>
 			<div class="relative mt-1 rounded-md shadow-sm">
@@ -164,7 +165,7 @@ import { onMount } from 'svelte';
 		height: 100%;
 		resize: both;
 	}
-	
+
 	.index-label {
 		margin: 20px;
 	}

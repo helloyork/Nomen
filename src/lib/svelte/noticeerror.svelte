@@ -1,8 +1,17 @@
 <script>
 	export let wrong = false;
+	import { cubicOut } from 'svelte/easing';
+	function slide(node, { delay = 0, duration = 400 }) {
+  const height = node.offsetHeight;
+  return {
+    delay,
+    duration,
+    css: t => `overflow: hidden; height: ${t * height}px`
+  };
+}
 </script>
 
-<div class="{wrong?"":"hidden"} relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+<div transition:slide="{duration: 1000, easing: cubicOut}" class="{wrong?"":"hidden"} relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true">
 	<div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
 
 	<div class="fixed inset-0 z-10 overflow-y-auto">
