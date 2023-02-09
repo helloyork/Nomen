@@ -2,6 +2,7 @@
 	import Noticeerror from '$lib/svelte/noticeerror.svelte';
 	import { onMount } from 'svelte';
 	import { fade, slide, fly, scale, draw, blur } from 'svelte/transition';
+	import { cubicOut, circOut } from 'svelte/easing';
 
 	let srcdoc;
 	let src = '';
@@ -22,6 +23,7 @@
 		wrong: false,
 		mes: ''
 	};
+	let focus=false;
 
 	onMount(() => {
 		state = '端点初始化完成';
@@ -105,8 +107,9 @@
 		else return true;
 	}}
 />
-{#if loadt}
-	<div transition:fade class="index-label">
+{#if loadt}	
+	<div transition:fade={{ duration: 200, easing: circOut,delay:1000 }} class="index-label p-5">
+		<h6>Nomen Web Proxy</h6>
 		<div>
 			<label for="price" class="block text-sm font-medium text-gray-700">网址</label>
 			<div class="relative mt-1 rounded-md shadow-sm">
@@ -115,8 +118,11 @@
 					type="text"
 					name="price"
 					id="price"
-					class="block w-full rounded-md border-gray-300 pl-7 pr-12 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-					placeholder="URL 例如: https://example.com"
+					class="block w-full rounded-md border-gray-300 outline-none pl-7 pr-12 sm:text-sm pt-3 pb-3"
+					placeholder="https://example.com"
+					on:focus={()=>focus=true}
+					on:blur={()=>focus=false}
+					style="transition: all 0.1s ease-in-out; box-shadow: {focus ? '0 0 0 1px #14B8A6' : 'none'};"
 					bind:value={src}
 				/>
 				<div class="absolute inset-y-0 right-0 flex items-center">
@@ -124,13 +130,13 @@
 					<select
 						id="currency"
 						name="currency"
-						class="h-full rounded-md border-transparent bg-transparent py-0 pl-2 pr-7 text-gray-500 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+						class="h-full rounded-md border-transparent bg-transparent py-0 pl-2 pr-7 text-gray-500 focus:border-main focus:bg-main focus:text-white sm:text-sm"
 					>
 						<option>普通模式下加载</option>
 					</select>
 				</div>
 			</div>
-			<button on:click={fetchHandler} {disabled}>
+			<button on:click={fetchHandler} {disabled} class="">
 				{btcontent}
 			</button>
 			<button

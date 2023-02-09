@@ -1,17 +1,18 @@
 <script>
 	//@ts-nocheck
 
-    export let data;
+	export let data;
 
 	import Noticebar from '$lib/svelte/noticebar.svelte';
 	import { onMount } from 'svelte';
 	import '../app.css';
 	import { fade, slide, fly, scale, draw, blur } from 'svelte/transition';
+	import { islogin } from '$lib/store';
 
 	let loadt = false;
 	onMount(() => {
 		if (localStorage.getItem('username') !== null || localStorage.getItem('password') !== null)
-			loadt = data.isSlug?false:true;
+			loadt = data.isSlug ? false : true;
 	});
 	let appear = {
 		1: false,
@@ -35,7 +36,7 @@
 </script>
 
 {#if loadt}
-	<div transition:fade class="relative bg-white">
+	<div class="relative bg-white">
 		<div class="mx-auto max-w-7xl px-6">
 			<div
 				class="flex items-center justify-between border-b-2 border-gray-100 py-3 md:justify-start md:space-x-10"

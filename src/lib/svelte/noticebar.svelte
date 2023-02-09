@@ -3,8 +3,8 @@
 	import { fade, slide, fly, scale, draw, blur } from 'svelte/transition';
 </script>
 
-<div  transition:fade class="{hidden?"hidden":""} bg-main">
-	<div class="mx-auto max-w-7xl py-3 px-3 sm:px-6 lg:px-8">
+<div class="{hidden?"hidden":""} bg-main">
+	<div class="mx-auto max-w-7xl py-2 px-3 sm:px-6 lg:px-8">
 		<div class="flex flex-wrap items-center justify-between">
 			<div class="flex w-0 flex-1 items-center">
 				<span class="flex rounded-lg bg-secondary p-2">

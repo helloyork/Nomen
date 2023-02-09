@@ -1,10 +1,12 @@
 <script>
-    import { onMount } from 'svelte';
-	
+	import { onMount } from 'svelte';
+	import { islogin } from '$lib/store';
+
 	onMount(() => {
-		if (localStorage.getItem('username') === null || localStorage.getItem('password') === null)
+		if (localStorage.getItem('username') === null || localStorage.getItem('password') === null){
 			location.href = '/login';
-		else {
+		} else {
+			islogin.set(true);
 			location.href = '/book';
 		}
 	});
