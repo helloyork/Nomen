@@ -15,7 +15,7 @@
 	$: loadt = false;
 	let pageurl;
 	let windowl;
-	let log='';
+	let log = '';
 
 	onMount(() => {
 		state = '端点初始化完成';
@@ -29,8 +29,11 @@
 			loadt = true;
 		}
 		windowl = window;
-		if (pageurl.searchParams.get('note') !== null && jugeUrl(window.atob(pageurl.searchParams.get('note')))) {
-			src=window.atob(pageurl.searchParams.get('note'));
+		if (
+			pageurl.searchParams.get('note') !== null &&
+			jugeUrl(window.atob(pageurl.searchParams.get('note')))
+		) {
+			src = window.atob(pageurl.searchParams.get('note'));
 		}
 	});
 	function jugeUrl(t) {
@@ -60,11 +63,14 @@
 				srcdoc = v.webdata;
 				done = true;
 				srcl = done && v.ok ? `/book/${srcdoc}` : 'about:blank';
-				err = 'Puppeteer | 渲染模式：Server-side rendering | 脚本：允许 | 剩余积分:'+Math.round(v.point);
+				err =
+					'Puppeteer | 渲染模式：Server-side rendering | 脚本：允许 | 剩余积分:' +
+					Math.round(v.point);
 				message =
 					'支持我：资助我以抵消服务器维护成本、网站编写的时间成本以及获得一个额外的[网页针对性优化席位]，资助10元以上可以克隆项目并且无限访问，附带后三个版本的更新与错误修复；访问会对服务器造成流量压力，并且耗尽WebDriver的总运行时常，资助可以帮助我继续开发和不断优化Nomen Proxy，这对我很有帮助';
 				btcontent = '加载';
-				log='更新日志: NomenProxy@1.2.7 | 优化ServerSide Rending；针对小说和漫画网站进行优化，加载完整的资源；更新链接的点击事件并自动启动WebDriver与渲染器；优化资源获取，扫描图片资源；优化速度'
+				log =
+					'更新日志: NomenProxy@1.2.7 | 优化ServerSide Rending；针对小说和漫画网站进行优化，加载完整的资源；更新链接的点击事件并自动启动WebDriver与渲染器；优化资源获取，扫描图片资源；优化速度';
 
 				setTimeout(() => {
 					disabled = false;
@@ -90,20 +96,50 @@
 	}}
 />
 {#if loadt}
-	<div>
-		<input bind:value={src} />
-		<button on:click={fetchHandler} {disabled}>
-			{btcontent}
-		</button>
-		<button on:click={()=>{if(confirm('确认清除缓存？清除缓存后会退出登录，仅在登录失效的情况下使用')){localStorage.clear();location.href='/login';}}}>清除缓存</button>
+	<div class="index-label">
+		<div>
+			<label for="price" class="block text-sm font-medium text-gray-700">网址</label>
+			<div class="relative mt-1 rounded-md shadow-sm">
+				<div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3" />
+				<input
+					type="text"
+					name="price"
+					id="price"
+					class="block w-full rounded-md border-gray-300 pl-7 pr-12 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+					placeholder="URL 例如: https://example.com"
+					bind:value={src}
+				/>
+				<div class="absolute inset-y-0 right-0 flex items-center">
+					<label for="currency" class="sr-only">Currency</label>
+					<select
+						id="currency"
+						name="currency"
+						class="h-full rounded-md border-transparent bg-transparent py-0 pl-2 pr-7 text-gray-500 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+					>
+						<option>普通模式下加载</option>
+					</select>
+				</div>
+			</div>
+			<button on:click={fetchHandler} {disabled}>
+				{btcontent}
+			</button>
+			<button
+				on:click={() => {
+					if (confirm('确认清除缓存？清除缓存后会退出登录，仅在登录失效的情况下使用')) {
+						localStorage.clear();
+						location.href = '/login';
+					}
+				}}>清除缓存</button
+			>
+		</div>
+		<br />
+		<p>{state}</p>
+		<p>{err}</p>
+		<p>{message}</p>
+		<p>{log}</p>
+		<button on:click={openWindow}>{done ? '全屏' : ''}</button>
+		<iframe class="ifr" src={srcl} border="0" frameborder="no" framespacing="0" title="nomenawa" />
 	</div>
-	<br />
-	<p>{state}</p>
-	<p>{err}</p>
-	<p>{message}</p>
-	<p>{log}</p>
-	<button on:click={openWindow}>{done ? '全屏' : ''}</button>
-	<iframe class="ifr" src={srcl} border="0" frameborder="no" framespacing="0" title="nomenawa"/>
 {/if}
 <br />
 
@@ -117,5 +153,9 @@
 		width: 95%;
 		height: 100%;
 		resize: both;
+	}
+	
+	.index-label {
+		margin: 20px;
 	}
 </style>
