@@ -1,4 +1,6 @@
 <script>
+	//@ts-nocheck
+
 	import Noticeerror from '$lib/svelte/noticeerror.svelte';
 	import { onMount } from 'svelte';
 	import { fade, slide, fly, scale, draw, blur } from 'svelte/transition';
@@ -23,7 +25,7 @@
 		wrong: false,
 		mes: ''
 	};
-	let focus=false;
+	let focus = false;
 
 	onMount(() => {
 		state = '端点初始化完成';
@@ -107,12 +109,12 @@
 		else return true;
 	}}
 />
-{#if loadt}	
-	<div transition:fade={{ duration: 200, easing: circOut,delay:1000 }} class="index-label p-5">
+{#if loadt}
+	<div transition:fade={{ duration: 200, easing: circOut, delay: 1000 }} class="index-label p-5">
 		<h6>Nomen Web Proxy</h6>
 		<div>
 			<label for="price" class="block text-sm font-medium text-gray-700">网址</label>
-			<div class="relative mt-1 rounded-md shadow-sm">
+			<div class="relative mt-1 rounded-md shadow-sm mb-3">
 				<div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3" />
 				<input
 					type="text"
@@ -120,9 +122,11 @@
 					id="price"
 					class="block w-full rounded-md border-gray-300 outline-none pl-7 pr-12 sm:text-sm pt-3 pb-3"
 					placeholder="https://example.com"
-					on:focus={()=>focus=true}
-					on:blur={()=>focus=false}
-					style="transition: all 0.1s ease-in-out; box-shadow: {focus ? '0 0 0 1px #14B8A6' : 'none'};"
+					on:focus={() => (focus = true)}
+					on:blur={() => (focus = false)}
+					style="transition: all 0.1s ease-in-out; box-shadow: {focus
+						? '0 0 0 1px #14B8A6'
+						: 'none'};"
 					bind:value={src}
 				/>
 				<div class="absolute inset-y-0 right-0 flex items-center">
@@ -136,17 +140,23 @@
 					</select>
 				</div>
 			</div>
-			<button on:click={fetchHandler} {disabled} class="">
+			<button
+				class="bg-main hover:bg-secondary rounded-lg shadow-lg py-1 text-white w-24"
+				{disabled}
+				on:click={fetchHandler}
+			>
 				{btcontent}
 			</button>
 			<button
+				class="bg-white border border-main hover:border-secondary rounded-lg shadow-lg py-1 text-main w-24"
 				on:click={() => {
 					if (confirm('确认清除缓存？清除缓存后会退出登录，仅在登录失效的情况下使用')) {
 						localStorage.clear();
 						location.href = '/login';
 					}
-				}}>清除缓存</button
-			>
+				}}
+				>清除缓存
+			</button>
 		</div>
 		<br />
 		<p>{state}</p>
@@ -174,5 +184,11 @@
 
 	.index-label {
 		margin: 20px;
+	}
+
+	button[disabled] {
+		background-color: rgb(192, 192, 192);
+		color: white;
+		cursor: not-allowed;
 	}
 </style>
