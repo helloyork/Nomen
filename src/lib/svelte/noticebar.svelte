@@ -25,9 +25,9 @@
 					</svg>
 				</span>
 				<p class="ml-3 truncate font-medium text-white">
-					<span class="md:hidden">资助我们！</span>
+					<span class="md:hidden">资助我们</span>
 					<span class="hidden md:inline"
-						>让网站变得更好！资助我们以抵消网站成本，推进技术升级！</span
+						>让网站变得更好！资助我们以抵消网站运行成本，推进技术升级！</span
 					>
 				</p>
 			</div>

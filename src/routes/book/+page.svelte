@@ -110,7 +110,7 @@
 	}}
 />
 {#if loadt}
-	<div transition:fade={{ duration: 200, easing: circOut, delay: 1000 }} class="index-label p-5">
+	<div transition:fade={{ duration: 200, easing: circOut }} class="index-label p-5">
 		<h6>Nomen Web Proxy</h6>
 		<div>
 			<label for="price" class="block text-sm font-medium text-gray-700">网址</label>
@@ -141,14 +141,14 @@
 				</div>
 			</div>
 			<button
-				class="bg-main hover:bg-secondary rounded-lg shadow-lg py-1 text-white w-24"
+				class="bg-main hover:bg-secondary active:bg-main-text rounded-lg shadow-sm py-1 text-white w-24"
 				{disabled}
 				on:click={fetchHandler}
 			>
 				{btcontent}
 			</button>
 			<button
-				class="bg-white border border-main hover:border-secondary rounded-lg shadow-lg py-1 text-main w-24"
+				class="bg-white border border-main hover:border-secondary rounded-lg shadow-sm py-1 text-main w-24"
 				on:click={() => {
 					if (confirm('确认清除缓存？清除缓存后会退出登录，仅在登录失效的情况下使用')) {
 						localStorage.clear();

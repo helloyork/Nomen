@@ -5,7 +5,7 @@
 		if (localStorage.getItem('username') === null || localStorage.getItem('password') === null){
 			location.href = '/login';
 		} else {
-			location.href = '/book';
+			location.href = '/home';
 		}
 	});
 </script>

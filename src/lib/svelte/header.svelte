@@ -1,6 +1,10 @@
 <script>
 	//@ts-nocheck
-    
+
+
+	import { fade } from 'svelte/transition';
+	import { circOut } from 'svelte/easing';
+
 	let appear = {
 		1: false,
 		2: false
@@ -88,86 +92,87 @@
 							/>
 						</svg>
 					</a>
-					<div
-						on:mousemove={() => mouseenter(2)}
-						on:mouseenter={() => mouseenter(2)}
-						on:mouseleave={() => mouseleave(2)}
-						class="{appear[2]
-							? ''
-							: 'hidden'} absolute left-1/2 z-10 mt-3 w-screen max-w-md -translate-x-1/2 transform px-2 sm:px-0"
-					>
-						<div class="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5">
-							<div class="relative grid gap-6 bg-white px-5 py-6 sm:gap-8 sm:p-8">
-								<a href="/book" class="-m-3 flex items-start rounded-lg p-3 hover:bg-gray-50">
-									<svg
-										class="h-6 w-6 flex-shrink-0 text-indigo-600"
-										width="19"
-										height="19"
-										viewBox="0 0 48 48"
-										fill="none"
-										xmlns="http://www.w3.org/2000/svg"
-										><rect
-											x="4"
-											y="8"
-											width="40"
-											height="32"
-											rx="3"
-											stroke="#14B8A6"
-											stroke-width="1"
-											stroke-linejoin="round"
-										/><path
-											d="M4 11C4 9.34315 5.34315 8 7 8H41C42.6569 8 44 9.34315 44 11V20H4V11Z"
+					{#if appear[2]}
+						<div
+							on:mousemove={() => mouseenter(2)}
+							on:mouseenter={() => mouseenter(2)}
+							on:mouseleave={() => mouseleave(2)}
+							class=" absolute left-1/2 z-10 mt-3 w-screen max-w-md -translate-x-1/2 transform px-2 sm:px-0"
+							transition:fade={{ duration: 200, easing: circOut }}
+						>
+							<div class="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5">
+								<div class="relative grid gap-6 bg-white px-5 py-6 sm:gap-8 sm:p-8">
+									<a href="/book" class="-m-3 flex items-start rounded-lg p-3 hover:bg-gray-50">
+										<svg
+											class="h-6 w-6 flex-shrink-0 text-indigo-600"
+											width="19"
+											height="19"
+											viewBox="0 0 48 48"
 											fill="none"
-											stroke="#14B8A6"
-											stroke-width="1"
-										/><circle
-											r="2"
-											transform="matrix(-1.31134e-07 -1 -1 1.31134e-07 10 14)"
-											fill="#14B8A6"
-										/><circle
-											r="2"
-											transform="matrix(-1.31134e-07 -1 -1 1.31134e-07 16 14)"
-											fill="#14B8A6"
-										/></svg
-									>
-									<div class="ml-4">
-										<p class="text-base font-medium text-gray-900">网页代理</p>
-										<p class="mt-1 text-sm text-gray-500">查看被阻挡或被禁用的网址</p>
-									</div>
-								</a>
-							</div>
-							<div class="bg-gray-50 px-5 py-5 sm:px-8 sm:py-8">
-								<div>
-									<h3 class="text-base font-medium text-gray-500">常见问题</h3>
-									<ul role="list" class="mt-4 space-y-4">
-										<li class="truncate text-xs">
-											<a href="/QA" class="hover:text-secondary font-normal text-gray-900"
-												>为什么我无法启动Nomen Web Proxy</a
-											>
-										</li>
-
-										<li class="truncate text-xs">
-											<a href="/QA" class="hover:text-secondary font-normal text-gray-900"
-												>如何获取更多积分</a
-											>
-										</li>
-
-										<li class="truncate text-xs">
-											<a href="/QA" class="hover:text-secondary font-normal text-gray-900"
-												>我该如何反馈使用过程中的问题</a
-											>
-										</li>
-									</ul>
-								</div>
-								<div class="mt-5 text-sm">
-									<a href="#" class="font-medium text-main-text hover:text-secondary">
-										更多内容
-										<span aria-hidden="true"> &rarr;</span>
+											xmlns="http://www.w3.org/2000/svg"
+											><rect
+												x="4"
+												y="8"
+												width="40"
+												height="32"
+												rx="3"
+												stroke="#14B8A6"
+												stroke-width="1"
+												stroke-linejoin="round"
+											/><path
+												d="M4 11C4 9.34315 5.34315 8 7 8H41C42.6569 8 44 9.34315 44 11V20H4V11Z"
+												fill="none"
+												stroke="#14B8A6"
+												stroke-width="1"
+											/><circle
+												r="2"
+												transform="matrix(-1.31134e-07 -1 -1 1.31134e-07 10 14)"
+												fill="#14B8A6"
+											/><circle
+												r="2"
+												transform="matrix(-1.31134e-07 -1 -1 1.31134e-07 16 14)"
+												fill="#14B8A6"
+											/></svg
+										>
+										<div class="ml-4">
+											<p class="text-base font-medium text-gray-900">网页代理</p>
+											<p class="mt-1 text-sm text-gray-500">查看被阻挡或被禁用的网址</p>
+										</div>
 									</a>
+								</div>
+								<div class="bg-gray-50 px-5 py-5 sm:px-8 sm:py-8">
+									<div>
+										<h3 class="text-base font-medium text-gray-500">常见问题</h3>
+										<ul role="list" class="mt-4 space-y-4">
+											<li class="truncate text-xs">
+												<a href="/QA" class="hover:text-secondary font-normal text-gray-900"
+													>为什么我无法启动Nomen Web Proxy</a
+												>
+											</li>
+
+											<li class="truncate text-xs">
+												<a href="/QA" class="hover:text-secondary font-normal text-gray-900"
+													>如何获取更多积分</a
+												>
+											</li>
+
+											<li class="truncate text-xs">
+												<a href="/QA" class="hover:text-secondary font-normal text-gray-900"
+													>我该如何反馈使用过程中的问题</a
+												>
+											</li>
+										</ul>
+									</div>
+									<div class="mt-5 text-sm">
+										<a href="#" class="font-medium text-main-text hover:text-secondary">
+											更多内容
+											<span aria-hidden="true"> &rarr;</span>
+										</a>
+									</div>
 								</div>
 							</div>
 						</div>
-					</div>
+					{/if}
 				</div>
 			</nav>
 			<div class="hidden items-center justify-end md:flex md:flex-1 lg:w-0">
