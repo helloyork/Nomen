@@ -14,6 +14,9 @@
 	onMount(() => {
 		if (localStorage.getItem('username') !== null) {
 			islogin.set(!data.isSlug);
+		}else{
+			islogin.set(false);
+			if(!location.href.includes('/login'))location.href = "/login";
 		}
 	});
 
